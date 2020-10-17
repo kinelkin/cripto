@@ -3,11 +3,15 @@
 #include <gmp.h>
 
 void Euclidean(mpz_t resultado, mpz_t a, mpz_t b){
+  mpz_t modulo;
+  mpz_init(modulo);
 
-  mpz_gcd(resultado,a,b);
-
-  return;
-
+  if(mpz_sgn(a)==0){
+    mpz_set(resultado,b);
+    return;
+  }
+  mpz_mod(modulo,b,a);
+  Euclidean(resultado,modulo,a);
 }
 
 void euclideanExtended(mpz_t resultado, mpz_t a, mpz_t b){
@@ -46,6 +50,17 @@ void euclideanExtended(mpz_t resultado, mpz_t a, mpz_t b){
   mpz_set(y,y2);
   mpz_set(resultado,d);
 
+  mpz_clear(x);
+  mpz_clear(y);
+  mpz_clear(d);
+  mpz_clear(x2);
+  mpz_clear(x1);
+  mpz_clear(y2);
+  mpz_clear(y1);
+  mpz_clear(q);
+  mpz_clear(r);
+  mpz_clear(mul);
+
 }
 
 
@@ -56,15 +71,13 @@ int main(){
   mpz_init(b);
   mpz_init(m);
 
-  mpz_set_str (a,"35002136253",10);
-  mpz_set_str (b,"15246984520",10);
+  mpz_set_str (a,"5",10);
+  mpz_set_str (b,"125",10);
   Euclidean(m,a,b);
-  gmp_printf("%Zd \n", m);
+  gmp_printf("%Zd \n",m);
 
   euclideanExtended(m,a,b);
   gmp_printf("%Zd \n",m);
-
-
 
   mpz_clear(a);
   mpz_clear(b);
