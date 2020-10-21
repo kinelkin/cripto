@@ -63,63 +63,112 @@ void euclideanExtended(mpz_t resultado, mpz_t a, mpz_t b){
 
 }
 
-/*void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* mensaje){
-  mpz_t total,resultado;
-  int i;
-  char* textoPlano;
-  char textoCifrado, x;
+void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* mensaje, char* fichero){
+  mpz_t a1,total,resultado;
+  int i, mcd;
+  FILE* f;
+  char* textoCifrado;
+  char x;
 
-  mpz_init(resultado);
-  mpz_init(total);
-
-
-  euclideanExtended(resultado,a,m);
-
-  if (mpz_cmp_ui(resultado,1)){
-    printf("No existe inverso multiplicativo de a y por tanto no podemos cifrar");
+  f = fopen(fichero,"w");
+  if (f==NULL){
+    printf("Error al abrir el fichero");
     return;
   }
 
-  printf("hola manuelo");
-  textoPlano = (char*)malloc(sizeof(char)*5);
-  printf("hola manuelo");
-  strcpy(textoPlano,mensaje);
+  textoCifrado = (char*)malloc(sizeof(char)*(strlen(mensaje)+1));
 
-  for (i=0; i<=strlen(textoPlano); i++){
-    x = toupper(textoPlano[i]) - 65;
-    mpz_mul_ui(a,a,x);
-    mpz_add(a,a,b);
-    mpz_mod(total,a,m);
-    mpz_add_ui(total,total,65);
+  if(textoCifrado == NULL){
+    printf("Error reservando memoria para la cadena");
+    fclose(f);
+    return;
   }
 
-  gmp_printf("%Zd \n", total);
+  mpz_init(a1);
+  mpz_init(resultado);
+  mpz_init(total);
 
+  Euclidean(resultado,a,m);
+  mcd = mpz_get_ui(resultado);
 
+  if(mcd!=1){
+    printf("No existe inverso multiplicativo de a");
+    free(textoCifrado);
+    fclose(f);
+    return;
+  }
+
+  for (i=0; i<strlen(mensaje); i++){
+    x = mensaje[i];
+    mpz_mul_ui(a1,a,x);
+    mpz_add(a1,a1,b);
+    mpz_mod(total,a1,m);
+    textoCifrado[i] = mpz_get_ui(total);
+    fprintf(f,"%c", textoCifrado[i]);
+  }
+
+  mpz_clear(a1);
   mpz_clear(resultado);
   mpz_clear(total);
+  fclose(f);
 
   return;
+
+}
+
+void inversoMultiplicativo(mpz_t resultado, mpz_t a, mpz_t m){
+  mpz_t b;
+  mpz_init(b);
+  
+  for()
+}
+
+void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* mensaje, char* fichero2){
+  mpz_t a1,total,resultado;
+  int i, mcd;
+  FILE* f;
+  char* textoPlano;
+  char x;
+
+  f = fopen(fichero,"w");
+  if (f==NULL){
+    printf("Error al abrir el fichero");
+    return;
+  }
+
+  textoPlano = (char*)malloc(sizeof(char)*(strlen(mensaje)+1));
+
+  if(textoPlano == NULL){
+    printf("Error reservando memoria para la cadena");
+    fclose(f);
+    return;
+  }
+
+
 
 }
 
 
 int main(){
     mpz_t a,b,m;
+    char filename[100] = "cifrado.txt";
+    char filename2[100] = "plano.txt"
 
-    char mensaje[4] = "hola";
+    char mensaje[100] = "Probando que funcione el cifrado afín";
 
     mpz_init(a);
     mpz_init(b);
     mpz_init(m);
 
-    mpz_set_str (a,"9233473",10);
-    mpz_set_str (b,"1213232",10);
+    mpz_set_str (a,"4",10);
+    mpz_set_str (b,"15",10);
     mpz_set_str (m,"3",10);
-    cifrarAfin(a,b,m,mensaje);
+
+    cifrarAfin(a,b,m,mensaje,filename);
+    descifrarAfin(a,b,m,mensaje,filename);
 
     mpz_clear(a);
     mpz_clear(b);
     mpz_clear(m);
 
-}*/
+}
