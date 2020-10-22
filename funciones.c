@@ -1,6 +1,38 @@
 #include "funciones.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
-void Euclidean(mpz_t resultado, mpz_t a, mpz_t b){
+char *read_from_file(const char *filename){
+    long int size = 0;
+    FILE *file = fopen(filename, "r");
+
+    if(!file) {
+        fputs("File error.\n", stderr);
+        return NULL;
+    }
+
+    fseek(file, 0, SEEK_END);
+    size = ftell(file);
+    rewind(file);
+
+    char *result = (char *) malloc(size);
+    if(!result) {
+        fputs("Memory error.\n", stderr);
+        fclose(file);
+        return NULL;
+    }
+
+    if(fread(result, 1, size, file) != size) {
+        fputs("Read error.\n", stderr);
+        fclose(file);
+        return NULL;
+    }
+
+    fclose(file);
+    return result;
+}
+void euclidean(mpz_t resultado, mpz_t a, mpz_t b){
   mpz_t modulo;
   mpz_init(modulo);
 
@@ -10,7 +42,7 @@ void Euclidean(mpz_t resultado, mpz_t a, mpz_t b){
     return;
   }
   mpz_mod(modulo,b,a);
-  Euclidean(resultado,modulo,a);
+  euclidean(resultado,modulo,a);
   mpz_clear(modulo);
 }
 
@@ -88,7 +120,7 @@ void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* mensaje, char* fichero){
   mpz_init(resultado);
   mpz_init(total);
 
-  Euclidean(resultado,a,m);
+  euclidean(resultado,a,m);
   mcd = mpz_get_ui(resultado);
 
   if(mcd!=1){
@@ -116,35 +148,44 @@ void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* mensaje, char* fichero){
 
 }
 
-void inversoMultiplicativo(mpz_t resultado, mpz_t a, mpz_t m){
-  mpz_t b;
-  mpz_init(b);
-  
-  for()
-}
-
-void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* mensaje, char* fichero2){
-  mpz_t a1,total,resultado;
-  int i, mcd;
-  FILE* f;
-  char* textoPlano;
+void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, FILE* ciphertext){
+  mpz_t inverso,b1,mul,total;
+  int i;
+  FILE* plano;
   char x;
+  char* cadena;
 
-  f = fopen(fichero,"w");
-  if (f==NULL){
+
+  plano = fopen("plano.txt","w");
+  if (plano==NULL){
     printf("Error al abrir el fichero");
     return;
   }
 
-  textoPlano = (char*)malloc(sizeof(char)*(strlen(mensaje)+1));
+  cadena = read_from_file(ciphertext);
 
-  if(textoPlano == NULL){
-    printf("Error reservando memoria para la cadena");
-    fclose(f);
-    return;
+  mpz_init(inverso);
+  mpz_init(b1);
+  mpz_init(mul);
+  mpz_init(total);
+  mpz_invert(inverso,a,m);
+
+
+  for (i=0; i<strlen(cadena); i++){
+    x = cadena[i];
+    mpz_ui_sub(b1,x,b);
+    mpz_mul(mul,inverso,b1);
+    mpz_mod(total,mul,m);
+    cadena[i] = mpz_get_ui(total);
+    fprintf(plano,"%c", cadena[i]);
   }
 
-
+  mpz_clear(inverso);
+  mpz_clear(b1);
+  mpz_clear(mul);
+  mpz_clear(total);
+  fclose(plano);
+  fclose(ciphertext);
 
 }
 
@@ -152,23 +193,20 @@ void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* mensaje, char* fichero2){
 int main(){
     mpz_t a,b,m;
     char filename[100] = "cifrado.txt";
-    char filename2[100] = "plano.txt"
-
-    char mensaje[100] = "Probando que funcione el cifrado afín";
 
     mpz_init(a);
     mpz_init(b);
     mpz_init(m);
 
-    mpz_set_str (a,"4",10);
+    mpz_set_str (a,"19",10);
     mpz_set_str (b,"15",10);
-    mpz_set_str (m,"3",10);
+    mpz_set_str (m,"253",10);
 
-    cifrarAfin(a,b,m,mensaje,filename);
-    descifrarAfin(a,b,m,mensaje,filename);
+
+    descifrarAfin(a,b,m,filename);
 
     mpz_clear(a);
     mpz_clear(b);
     mpz_clear(m);
-
+    return 0;
 }
