@@ -9,8 +9,8 @@
 
 void euclidean(mpz_t resultado, mpz_t a, mpz_t b);
 void euclideanExtended(mpz_t resultado, mpz_t a, mpz_t b);
-void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* mensaje, char* fichero);
-void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* ciphertext);
-char *read_from_file(const char *filename);
+void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, FILE* entrada, FILE* salida);
+void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, FILE* entrada, FILE* salida);
+
 
 #endif

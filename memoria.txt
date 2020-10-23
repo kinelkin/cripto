@@ -1,10 +1,5 @@
-En esta primera práctica vamos a programar los métodos clásicos de cifrados, éstos son cifrados por sustitución (monoalfabético y polialfabético) y cifrados por transposición. Además, trataremos el criptoanálisis de los mismos. 
-Para ello, lo primero que hemos implementado es el algoritmo de Euclides, el cual se encarga de encontrar el máximo común divisor de dos números enteros. La función Euclidean() es la que realiza dicha tarea, apelando a la recursividad. En ella, comprobamos si a=0, en cuyo caso devolvemos b como mcd. En caso contrario, calculamos el módulo (b%a) y llamamos a la función recursivamente ahora con modulo y a (esto se realiza hasta que se cumpla la condición del if anteriormente comentada). 
+En esta primera práctica vamos a programar los métodos clásicos de cifrados, éstos son cifrados por sustitución (monoalfabético y polialfabético) y cifrados por transposición. Además, trataremos el criptoanálisis de los mismos.
+Para ello, lo primero que hemos implementado es el algoritmo de Euclides, el cual se encarga de encontrar el máximo común divisor de dos números enteros. La función Euclidean() es la que realiza dicha tarea, apelando a la recursividad. En ella, comprobamos si a=0, en cuyo caso devolvemos b como mcd. En caso contrario, calculamos el módulo (b%a) y llamamos a la función recursivamente ahora con modulo y a (esto se realiza hasta que se cumpla la condición del if anteriormente comentada).
 Además, hemos implementado la función euclideanExtended, que además de calcular el mcd de dos números enteros, calcula también los coeficientes de la identidad de Bezout, esto es x e y de la fórmula: "ax +by=gcd(a,b)". En ambas funciones, se ha empleado la librería GMP, la cual nos ha complicado ligeramente, puesto que era la primera vez que la usábamos.
 
 Una vez hecho esto, comenzamos con el desarrollo del método afín, para el cual lo primero es comprobar que mcd de a y el módulo m es 1, puesto que en caso contrario no existiría inverso multiplicativo y no podríamos descifrar el texto. El bucle for cifra cada caracter del texto plano con la fórmula caracter_cifrado = (a*caracter_plano[i] + b) % m, los cuales son escritos en un fichero pasado como argumento.
-
-
-
-
-
