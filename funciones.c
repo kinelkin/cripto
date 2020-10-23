@@ -134,15 +134,10 @@ void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* mensaje, char* fichero){
 
   for (i=0; i<strlen(mensaje); i++){
     x = mensaje[i];
-    printf("%c %d\n", mensaje[i], mensaje[i]);
     mpz_mul_ui(a1,a,x);
-    gmp_printf("%Zd\n", a1);
     mpz_add(a1,a1,b);
-    gmp_printf("%Zd\n", a1);
     mpz_mod(total,a1,m);
-    gmp_printf("%Zd\n", total);
     mpz_add_ui(total,total,65);
-    gmp_printf("%Zd\n", total);
     textoCifrado[i] = mpz_get_ui(total);
     fprintf(f,"%c", textoCifrado[i]);
   }
@@ -150,6 +145,7 @@ void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* mensaje, char* fichero){
   mpz_clear(a1);
   mpz_clear(resultado);
   mpz_clear(total);
+  free(textoCifrado);
   fclose(f);
 
   return;
@@ -188,18 +184,14 @@ void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* ciphertext){
   modulo = mpz_get_ui(m);
   for (i=0; i<strlen(cadena); i++){
     x = cadena[i]-65;
-    printf("%c %d \n", cadena[i],cadena[i]);
     mpz_ui_sub(b1,x,b);
-
     negativo = mpz_get_ui(b1);
     while(negativo<0){
       mpz_add(b1,b1,m);
       negativo += modulo;
     }
     mpz_mul(mul,inverso,b1);
-    gmp_printf("%Zd\n", mul);
     mpz_mod(total,mul,m);
-    gmp_printf("%Zd\n", total);
     sumando = mpz_get_ui(total);
     while(sumando<65){
       sumando += modulo;
@@ -219,8 +211,9 @@ void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* ciphertext){
 
 int main(){
     mpz_t a,b,m;
+    char fichero[100] = "fichero.txt";
     char ciphertext[100] = "cifrado.txt";
-    char mensaje[100] = "hola";
+    char planetario[100] = "plano.txt"
 
     mpz_init(a);
     mpz_init(b);
@@ -230,8 +223,8 @@ int main(){
     mpz_set_str (b,"15",10);
     mpz_set_str (m,"27",10);
 
-    descifrarAfin(a,b,m,ciphertext);
-    /*cifrarAfin(a,b,m,mensaje,filename);*/
+    cifrarAfin(a,b,m,mensaje,fichero);
+
 
     mpz_clear(a);
     mpz_clear(b);

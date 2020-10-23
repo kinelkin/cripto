@@ -1,15 +1,15 @@
 int main(){
     mpz_t a,b,m;
     char filename[100] = "cifrado.txt";
-    char mensaje[100] = "hola";
+    char mensaje[100] = "Hola soy laturrA";
 
     mpz_init(a);
     mpz_init(b);
     mpz_init(m);
 
-    mpz_set_str (a,"5",10);
+    mpz_set_str (a,"13",10);
     mpz_set_str (b,"15",10);
-    mpz_set_str (m,"27",10);
+    mpz_set_str (m,"95",10);
 
 
     cifrarAfin(a,b,m,mensaje,filename);
@@ -30,9 +30,9 @@ int main(){
     mpz_init(b);
     mpz_init(m);
 
-    mpz_set_str (a,"5",10);
+    mpz_set_str (a,"13",10);
     mpz_set_str (b,"15",10);
-    mpz_set_str (m,"27",10);
+    mpz_set_str (m,"95",10);
 
     descifrarAfin(a,b,m,ciphertext);
     /*cifrarAfin(a,b,m,mensaje,filename);*/
