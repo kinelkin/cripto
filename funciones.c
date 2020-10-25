@@ -3,35 +3,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-char *read_from_file(const char *filename){
-    long int size = 0;
-    FILE *file = fopen(filename, "r");
-
-    if(!file) {
-        fputs("File error.\n", stderr);
-        return NULL;
-    }
-
-    fseek(file, 0, SEEK_END);
-    size = ftell(file);
-    rewind(file);
-
-    char *result = (char *) malloc(size);
-    if(!result) {
-        fputs("Memory error.\n", stderr);
-        fclose(file);
-        return NULL;
-    }
-
-    if(fread(result, 1, size, file) != size) {
-        fputs("Read error.\n", stderr);
-        fclose(file);
-        return NULL;
-    }
-
-    fclose(file);
-    return result;
-}
 
 void euclidean(mpz_t resultado, mpz_t a, mpz_t b){
   mpz_t modulo;
@@ -96,26 +67,28 @@ void euclideanExtended(mpz_t resultado, mpz_t a, mpz_t b){
 
 }
 
-void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, FILE* entrada, FILE* salida){
+void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
   mpz_t a1,total,resultado;
   int i, mcd;
-  char* textoCifrado, *textoPlano;
+  FILE* entrada;
+  FILE* salida;
+  char* textoCifrado=NULL, *textoPlano=NULL;
   char x;
 
-  entrada = fopen("fichero.txt", "r");
+  entrada = fopen(filein, "r");
   if (entrada==NULL){
     printf("Error al abrir el fichero de lectura");
     return;
   }
 
-  salida = fopen("cifrado.txt","w");
+  salida = fopen(fileout,"w");
   if (salida==NULL){
     fclose(entrada);
     printf("Error al abrir el fichero de salida");
     return;
   }
 
-  textoPlano = (char*)malloc(sizeof(char));
+  textoPlano = (char*)malloc(sizeof(char)*10000);
   fscanf(entrada,"%s", textoPlano);
   textoCifrado = (char*)malloc(sizeof(char)*(strlen(textoPlano)+1));
 
@@ -165,26 +138,28 @@ void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, FILE* entrada, FILE* salida){
 
 }
 
-void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, FILE* entrada, FILE* salida){
+void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
   mpz_t inverso,b1,mul,total;
   int i,sumando,modulo,negativo;
   char x;
+  FILE* entrada;
+  FILE* salida;
   char* textoDescifrado=NULL;
 
-  entrada = fopen("cifrado.txt", "r");
+  entrada = fopen(filein, "r");
   if(entrada==NULL){
     printf("Error abriendo el fichero a descifrar");
     return;
   }
 
-  salida = fopen("plano.txt","w");
+  salida = fopen(fileout,"w");
   if (salida==NULL){
     printf("Error al abrir el fichero de salida para el descifrado");
     fclose(entrada);
     return;
   }
 
-  textoDescifrado = (char*)malloc(sizeof(char));
+  textoDescifrado = (char*)malloc(sizeof(char)*10000);
   fscanf(entrada,"%s",textoDescifrado);
 
   mpz_init(inverso);

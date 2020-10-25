@@ -1,8 +1,8 @@
 int main(){
     mpz_t a,b,m;
-    FILE* entrada;
-    FILE* salida;
-
+    char fichero[100]="fichero.txt";
+    char cifrado[100]="cifrado.txt";
+    char plano[100]="plano.txt";
 
     mpz_init(a);
     mpz_init(b);
@@ -12,8 +12,8 @@ int main(){
     mpz_set_str (b,"15",10);
     mpz_set_str (m,"27",10);
 
-    cifrarAfin(a,b,m,entrada,salida);
-    descifrarAfin(a,b,m,entrada,salida);
+    cifrarAfin(a,b,m,fichero,cifrado);
+    descifrarAfin(a,b,m,cifrado,plano);
 
 
     mpz_clear(a);
