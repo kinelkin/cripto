@@ -21,18 +21,9 @@ int main(){
     mpz_set_str (b,"0",10);
     mpz_set_ui(m,modulo);
 
-    inyectiva = comprobarInyectividad(a,b,m,comprobacion1);
 
-    if(inyectiva!=1){
-      printf("NO ES INYECTIVA");
-      mpz_clear(a);
-      mpz_clear(b);
-      mpz_clear(m);
-      return -1;
-    }
-
-    cifrarAfin(a,b,m,fichero,cifrado);
-    descifrarAfin(a,b,m,cifrado,plano);
+    cifrarAfinRobusto(a,b,m,fichero,cifrado);
+    descifrarAfinRobusto(a,b,m,cifrado,plano);
 
 
     mpz_clear(a);

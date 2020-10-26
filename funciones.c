@@ -76,43 +76,53 @@ long int findSize(const char* file_name){
         return -1;
 }
 
-int comprobarInyectividad(mpz_t a, mpz_t b, mpz_t m, char* filein){
-  char comprobacion2[100]="comprobacion2.txt";
-  char alfabeto[27]="ABCDEFGHIJKLMNOPQRSTUVWYZ";
-  char cifrado[27];
+int comprobarInyectividad(mpz_t a, mpz_t b, mpz_t m){
+  char alfabeto[25]="ABCDEFGHIJKLMNOPQRSTUVWYZ";
+  char cifrado[25], c;
+  mpz_t a1,total;
   FILE* entrada;
   FILE* salida;
   int i=0,j;
 
-  entrada = fopen(filein, "w");
-  if (entrada==NULL){
-    printf("Error al abrir el fichero de lectura");
-    return -1;
-  }
-
-  fprintf(entrada, "%s", alfabeto);
-  fclose(entrada);
-
-  cifrarAfin(a,b,m,filein,comprobacion2);
-
-  salida = fopen(comprobacion2,"r");
+  salida = fopen("comprobacion_inyectiva.txt","w");
   if (salida==NULL){
     printf("Error al abrir el fichero de salida");
     return-1;
   }
 
+  mpz_init(a1);
+  mpz_init(total);
+
+  for (i=0; i<25; i++){
+    c = alfabeto[i];
+    mpz_mul_ui(a1,a,c);
+    mpz_add(a1,a1,b);
+    mpz_mod(total,a1,m);
+    mpz_add_ui(total,total,65);
+    cifrado[i] = mpz_get_ui(total);
+    fprintf(salida,"%c", cifrado[i]);
+  }
+  fclose(salida);
+
+  salida = fopen("comprobacion_inyectiva.txt","r");
+    if (salida==NULL){
+      printf("Error al abrir el fichero de salida");
+      return-1;
+    }
   fscanf(salida,"%s",cifrado);
 
 
-  for(i=0;i<28;i++){
+  for(i=0;i<25;i++){
     for(j=0;j<i;j++){
       if(cifrado[i]==cifrado[j]){
+        printf("%c %c \n", cifrado[i], cifrado[j]);
         return 0;
       }
     }
   }
 
-
+  mpz_clear(a1);
+  mpz_clear(total);
   fclose(salida);
   return 1;
 
@@ -120,13 +130,20 @@ int comprobarInyectividad(mpz_t a, mpz_t b, mpz_t m, char* filein){
 
 void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
   mpz_t a1,total,resultado;
-  int i, mcd, contador=0;
+  int i, mcd, inyectiva, contador=0;
   long int longitud;
   FILE* entrada;
   FILE* salida;
   char* textoCifrado=NULL, *textoPlano=NULL;
   char x, c;
   struct stat fileStat;
+
+  inyectiva = comprobarInyectividad(a,b,m);
+
+  if(inyectiva!=1){
+    printf("NO ES INYECTIVA");
+    return;
+  }
 
   entrada = fopen(filein, "r");
   if (entrada==NULL){
@@ -200,7 +217,7 @@ void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
   char x;
   FILE* entrada;
   FILE* salida;
-  char* textoDescifrado=NULL;
+  char* textoDescifrado;
 
   entrada = fopen(filein, "r");
   if(entrada==NULL){
@@ -214,8 +231,15 @@ void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
     fclose(entrada);
     return;
   }
+
   longitud = findSize(filein);
   textoDescifrado = (char*)malloc(sizeof(char)*longitud);
+  if (textoDescifrado==NULL){
+    printf("Error reservando memoria para la cadena de descifrado");
+    fclose(entrada);
+    fclose(salida);
+    return;
+  }
   fscanf(entrada,"%s",textoDescifrado);
 
   mpz_init(inverso);
@@ -253,40 +277,174 @@ void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
 
 }
 
+
+void cifrarAfinRobusto(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
+  mpz_t a1,total,resultado;
+  int i, mcd, contador=0;
+  long int longitud;
+  FILE* entrada;
+  FILE* salida;
+  char* textoCifrado=NULL, *textoPlano=NULL;
+  char x, c;
+  struct stat fileStat;
+
+  entrada = fopen(filein, "r");
+  if (entrada==NULL){
+    printf("Error al abrir el fichero de lectura");
+    return;
+  }
+
+  longitud = findSize(filein);
+
+  salida = fopen(fileout,"w");
+  if (salida==NULL){
+    fclose(entrada);
+    printf("Error al abrir el fichero de salida");
+    return;
+  }
+
+  textoPlano = (char*)malloc(sizeof(char)*longitud);
+  if(textoPlano == NULL){
+    printf("Error reservando memoria para la cadena que contiene el texto plano");
+    fclose(salida);
+    fclose(entrada);
+    return;
+  }
+  fscanf(entrada,"%s", textoPlano);
+
+  textoCifrado = (char*)malloc(sizeof(char)*(strlen(textoPlano)+1));
+  if(textoCifrado == NULL){
+    printf("Error reservando memoria para la cadena que contendrá el cifrado");
+    fclose(salida);
+    fclose(entrada);
+    return;
+  }
+
+  mpz_init(a1);
+  mpz_init(resultado);
+  mpz_init(total);
+
+  euclidean(resultado,a,m);
+  mcd = mpz_get_ui(resultado);
+
+  if(mcd!=1){
+    printf("No existe inverso multiplicativo de a");
+    free(textoPlano);
+    free(textoCifrado);
+    fclose(salida);
+    fclose(entrada);
+    return;
+  }
+
+  for (i=0; i<strlen(textoPlano); i++){
+    x = textoPlano[i];
+    mpz_mul_ui(a1,a,x);
+    mpz_add(a1,a1,b);
+    mpz_mod(total,a1,m);
+    mpz_add_ui(total,total,32);
+    textoCifrado[i] = mpz_get_ui(total);
+    fprintf(salida,"%c", textoCifrado[i]);
+  }
+
+  mpz_clear(a1);
+  mpz_clear(resultado);
+  mpz_clear(total);
+  free(textoCifrado);
+  free(textoPlano);
+  fclose(salida);
+  fclose(entrada);
+
+  return;
+
+}
+
+void descifrarAfinRobusto(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
+  mpz_t inverso,b1,mul,total;
+  int i,sumando,modulo,negativo;
+  long int longitud;
+  char x;
+  FILE* entrada;
+  FILE* salida;
+  char* textoDescifrado;
+
+  entrada = fopen(filein, "r");
+  if(entrada==NULL){
+    printf("Error abriendo el fichero a descifrar");
+    return;
+  }
+
+  salida = fopen(fileout,"w");
+  if (salida==NULL){
+    printf("Error al abrir el fichero de salida para el descifrado");
+    fclose(entrada);
+    return;
+  }
+
+  longitud = findSize(filein);
+  textoDescifrado = (char*)malloc(sizeof(char)*longitud);
+  if (textoDescifrado==NULL){
+    printf("Error reservando memoria para la cadena de descifrado");
+    fclose(entrada);
+    fclose(salida);
+    return;
+  }
+  fscanf(entrada,"%s",textoDescifrado);
+
+  mpz_init(inverso);
+  mpz_init(b1);
+  mpz_init(mul);
+  mpz_init(total);
+  mpz_invert(inverso,a,m);
+
+  modulo = mpz_get_ui(m);
+  for (i=0; i<strlen(textoDescifrado); i++){
+    x = textoDescifrado[i]-32;
+    mpz_ui_sub(b1,x,b);
+    negativo = mpz_get_ui(b1);
+    while(negativo<0){
+      mpz_add(b1,b1,m);
+      negativo += modulo;
+    }
+    mpz_mul(mul,inverso,b1);
+    mpz_mod(total,mul,m);
+    sumando = mpz_get_ui(total);
+    while(sumando<32){
+      sumando += modulo;
+    }
+    textoDescifrado[i] = sumando;
+    fprintf(salida,"%c", textoDescifrado[i]);
+  }
+
+  mpz_clear(inverso);
+  mpz_clear(b1);
+  mpz_clear(mul);
+  mpz_clear(total);
+  free(textoDescifrado);
+  fclose(salida);
+  fclose(entrada);
+
+}
+
 int main(){
     mpz_t a,b,m;
     char fichero[100]="fichero.txt";
     char cifrado[100]="cifrado.txt";
     char plano[100]="plano.txt";
-    int modulo;
 
-    printf("Elija un módulo (Sugerencia: Cuanto mayor sea, más robusto será su cifrado):\n");
-    scanf("%d", &modulo);
     mpz_init(a);
     mpz_init(b);
     mpz_init(m);
 
     mpz_set_str (a,"5",10);
-    mpz_set_str (b,"15",10);
-    mpz_set_str (b,"0",10);
-    mpz_set_ui(m,modulo);
+    mpz_set_str (b,"1",10);
+    mpz_set_str (m,"27",10);
 
-    inyectiva = comprobarInyectividad(a,b,m,comprobacion1);
 
-    if(inyectiva!=1){
-      printf("NO ES INYECTIVA");
-      mpz_clear(a);
-      mpz_clear(b);
-      mpz_clear(m);
-      return -1;
-    }
 
     cifrarAfin(a,b,m,fichero,cifrado);
     descifrarAfin(a,b,m,cifrado,plano);
 
 
-    mpz_clear(a);
-    mpz_clear(b);
-    mpz_clear(m);
-    return 0;
+
+return 0;
 }
