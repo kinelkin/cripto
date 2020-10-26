@@ -11,6 +11,9 @@ void euclidean(mpz_t resultado, mpz_t a, mpz_t b);
 void euclideanExtended(mpz_t resultado, mpz_t a, mpz_t b);
 void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* entrada, char* salida);
 void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* entrada, char* salida);
+long int findSize(const char* file_name);
+int comprobarInyectividad(mpz_t a, mpz_t b, mpz_t m, char* filein);
+
 
 
 #endif

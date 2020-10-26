@@ -76,6 +76,48 @@ long int findSize(const char* file_name){
         return -1;
 }
 
+int comprobarInyectividad(mpz_t a, mpz_t b, mpz_t m, char* filein){
+  char comprobacion2[100]="comprobacion2.txt";
+  char alfabeto[27]="ABCDEFGHIJKLMNOPQRSTUVWYZ";
+  char cifrado[27];
+  FILE* entrada;
+  FILE* salida;
+  int i=0,j;
+
+  entrada = fopen(filein, "w");
+  if (entrada==NULL){
+    printf("Error al abrir el fichero de lectura");
+    return -1;
+  }
+
+  fprintf(entrada, "%s", alfabeto);
+  fclose(entrada);
+
+  cifrarAfin(a,b,m,filein,comprobacion2);
+
+  salida = fopen(comprobacion2,"r");
+  if (salida==NULL){
+    printf("Error al abrir el fichero de salida");
+    return-1;
+  }
+
+  fscanf(salida,"%s",cifrado);
+
+
+  for(i=0;i<28;i++){
+    for(j=0;j<i;j++){
+      if(cifrado[i]==cifrado[j]){
+        return 0;
+      }
+    }
+  }
+
+
+  fclose(salida);
+  return 1;
+
+}
+
 void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
   mpz_t a1,total,resultado;
   int i, mcd, contador=0;
@@ -211,66 +253,23 @@ void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
 
 }
 
-int comprobarInyectividad(mpz_t a, mpz_t b, mpz_t m, char* filein){
-  char comprobacion2[100]="comprobacion2.txt";
-  char alfabeto[27]="ABCDEFGHIJKLMNOPQRSTUVWYZ";
-  char cifrado[27];
-  FILE* entrada;
-  FILE* salida;
-  int i=0,j;
-
-  entrada = fopen(filein, "w");
-  if (entrada==NULL){
-    printf("Error al abrir el fichero de lectura");
-    return -1;
-  }
-
-  fprintf(entrada, "%s", alfabeto);
-  fclose(entrada);
-
-  cifrarAfin(a,b,m,filein,comprobacion2);
-
-  salida = fopen(comprobacion2,"r");
-  if (salida==NULL){
-    printf("Error al abrir el fichero de salida");
-    return-1;
-  }
-
-  fscanf(salida,"%s",cifrado);
-
-
-  for(i=0;i<28;i++){
-    for(j=0;j<i;j++){
-      if(cifrado[i]==cifrado[j]){
-        return 0;
-      }
-    }
-  }
-
-
-  fclose(salida);
-  return 1;
-
-}
-
 int main(){
     mpz_t a,b,m;
     char fichero[100]="fichero.txt";
     char cifrado[100]="cifrado.txt";
     char plano[100]="plano.txt";
-    char comprobacion1[100]="comprobacion1.txt";
-    int inyectiva;
+    int modulo;
 
-
-
+    printf("Elija un módulo (Sugerencia: Cuanto mayor sea, más robusto será su cifrado):\n");
+    scanf("%d", &modulo);
     mpz_init(a);
     mpz_init(b);
     mpz_init(m);
 
     mpz_set_str (a,"5",10);
-    mpz_set_str (b,"18",10);
-    mpz_set_str (m,"27",10);
-
+    mpz_set_str (b,"15",10);
+    mpz_set_str (b,"0",10);
+    mpz_set_ui(m,modulo);
 
     inyectiva = comprobarInyectividad(a,b,m,comprobacion1);
 
@@ -286,6 +285,8 @@ int main(){
     descifrarAfin(a,b,m,cifrado,plano);
 
 
-
+    mpz_clear(a);
+    mpz_clear(b);
+    mpz_clear(m);
     return 0;
 }
