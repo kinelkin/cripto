@@ -1,9 +1,6 @@
 #!/bin/bash
 echo 'We will be using the novel 1984 for these experiments'
 
-gcc -g -o v vigenere.c funciones_alt.c
-
-
 echo 'Showing the first lines of the book'
 head 1984.txt --lines=10
 

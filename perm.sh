@@ -1,8 +1,6 @@
 #!/bin/bash
 echo 'We will be using the novel 1984 for these experiments'
 
-gcc -o p permutation.c funciones_alt.c
-
 echo 'Showing the first lines of the mini text'
 head mini.txt --lines=10
 
