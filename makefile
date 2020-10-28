@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-g 
+CFLAGS=-g
 EXS= v d p a ar stream_cipher
 
 all: $(EXS)
@@ -48,4 +48,4 @@ decypher.o: decypher.c funciones.o
 
 
 clean:
-	rm -rf *.o $(EXS) c_* k_* r_* cap_*
+	rm -rf *.o $(EXS) c_* k_* r_* cap_* 

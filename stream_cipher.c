@@ -2,7 +2,7 @@
 
 int main(int argc, char **argv){
 
-  if(argc < 3) {
+  if(argc < 4) {
     printf("Error con los argumentos, que deberia ser de la forma: <clave> <fichero entrada> <fichero salida>");
     return -1;
   }
