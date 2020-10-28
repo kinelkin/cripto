@@ -9,7 +9,7 @@ Desc:   ensures that the correct parameters are inputed into the program
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "funciones_alt.h"
+#include "funciones.h"
 
 #define MIN_ARGS 4
 #define MAX_ARGS 8
@@ -35,14 +35,14 @@ int main(int argc, char *argv[]){
       printf("\nExpected {-C|-D} but recieved %s\n", argv[arg]);
       return ERR;
     }
-    else mode = argv[arg++][1];     //arg = 1
+    else mode = argv[arg++][1];     /*arg = 1*/
 
 /************************ -k ************************/
-    if( argv[arg][1] != 'k' ){    //arg = 2
+    if( argv[arg][1] != 'k' ){    /*arg = 2*/
       printf("\nExpected -k but recieved %s\n", argv[arg]);
       return ERR;
     }
-    else k = argv[++arg];    //arg = 3
+    else k = argv[++arg];    /*arg = 3*/
     if (strlen(k) > MAX_KEY){
       printf("\nMAX Key Length is %d\n", MAX_KEY);
       return ERR;
@@ -52,30 +52,30 @@ int main(int argc, char *argv[]){
     switch(argc){
       /*BOTH FILES*/
       case (MAX_ARGS):
-        if( argv[++arg][1] != 'i' ){      //arg = 4
+        if( argv[++arg][1] != 'i' ){      /*arg = 4*/
           printf("\nExpected -i but recieved %s\n", argv[arg]);
           return ERR;
         }
-        else fname_in = argv[++arg];              //arg = 5
+        else fname_in = argv[++arg];              /*arg = 5*/
 
-        if( argv[++arg][1] != 'o' ){      //arg = 6
+        if( argv[++arg][1] != 'o' ){      /*arg = 6*/
           printf("\nExpected -o but recieved %s\n", argv[arg]);
           return ERR;
         }
-        else fname_out = argv[++arg];              //arg = 7
+        else fname_out = argv[++arg];              /*arg = 7*/
         break;
       /*ONE FILE*/
       case (MAX_ARGS - 2):
-        if( argv[++arg][1] != 'i' ){      //arg = 4
+        if( argv[++arg][1] != 'i' ){      /*arg = 4*/
           if( argv[arg][1] == 'o' ){
-            fname_out = argv[++arg];           //arg = 5
+            fname_out = argv[++arg];           /*arg = 5*/
           }
           else{
             printf("\nExpected -i or -o but recieved %s\n", argv[arg]);
             return ERR;
           }
         }
-        else fname_in = argv[++arg];              //arg = 5
+        else fname_in = argv[++arg];              /*arg = 5*/
         break;
       /*NO FILES*/
       case (MIN_ARGS):

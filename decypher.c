@@ -10,7 +10,7 @@ Desc:   finds the keylength of the encrypted text and then through frequency
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
-#include "funciones_alt.h"
+#include "funciones.h"
 
 #define MIN_ARGS 1
 #define MAX_ARGS 3
