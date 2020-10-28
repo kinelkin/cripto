@@ -2,17 +2,29 @@
 
 echo 'We will be using the novel 1984 for these experiments'
 
-gcc -g -o d decypher.c funciones_alt.c
-
+echo '\n\nEXP 1: Encrypting using KEY: NAVYSEALSARECOMING'
 ./v -C -k NAVYSEALSARECOMING -i 1984.txt -o c_1984.txt
+echo '\nObtaining KEY:'
 ./d -i c_1984.txt
-./v -D -k NAVYSEALSARECOMING -i c_1984.txt -o r_1984.txt
-./v -D -k TRGKGAIUEFGICKS -i c_1984.txt -o r_1984.txt
 
+echo '\n\nEXP 2: Encrypting using KEY: WINTER'
+./v -C -k WINTER -i 1984.txt -o c_1984.txt
+echo '\nObtaining KEY:'
+./d -i c_1984.txt
 
+echo '\n\nEXP 2: Encrypting using KEY: BOTTLE'
+./v -C -k BOTTLE -i 1984.txt -o c_1984.txt
+echo '\nObtaining KEY:'
+./d -i c_1984.txt
 
+echo '\n\nEXP 2: Encrypting using KEY: KITCHEN'
+./v -C -k KITCHEN -i 1984.txt -o c_1984.txt
+echo '\nObtaining KEY:'
+./d -i c_1984.txt
 
-diff cap_1984.txt r_1984.txt
-echo '\nNo Output Means All OK'
+echo '\n\nEXP 2: Encrypting using KEY: SHARKNADO'
+./v -C -k SHARKNADO -i 1984.txt -o c_1984.txt
+echo '\nObtaining KEY:'
+./d -i c_1984.txt
 
 echo 'All Finished'
