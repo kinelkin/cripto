@@ -82,7 +82,7 @@ int comprobarInyectividad(mpz_t a, mpz_t b, mpz_t m){
   mpz_t a1,total;
   FILE* entrada;
   FILE* salida;
-  int i=0,j;
+  int i,j;
 
   salida = fopen("comprobacion_inyectiva.txt","w");
   if (salida==NULL){
@@ -128,9 +128,9 @@ int comprobarInyectividad(mpz_t a, mpz_t b, mpz_t m){
 
 }
 
-void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
-  mpz_t a1,total,resultado;
-  int i, mcd, inyectiva, contador=0;
+void cifrarAfin(int m, int a, int b, char* filein, char* fileout){
+  mpz_t m1,a1,b1,a_aux,total,resultado;
+  int i, mcd, inyectiva;
   long int longitud;
   FILE* entrada;
   FILE* salida;
@@ -138,16 +138,28 @@ void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
   char x, c;
   struct stat fileStat;
 
-  inyectiva = comprobarInyectividad(a,b,m);
+  mpz_init(a1);
+  mpz_init(m1);
+  mpz_init(b1);
+  mpz_set_ui(a1,a);
+  mpz_set_ui(b1,b);
+  mpz_set_ui(m1,m);
+  inyectiva = comprobarInyectividad(a1,b1,m1);
 
   if(inyectiva!=1){
     printf("NO ES INYECTIVA");
+    mpz_clear(a1);
+    mpz_clear(b1);
+    mpz_clear(m1);
     return;
   }
 
   entrada = fopen(filein, "r");
   if (entrada==NULL){
     printf("Error al abrir el fichero de lectura");
+    mpz_clear(a1);
+    mpz_clear(b1);
+    mpz_clear(m1);
     return;
   }
 
@@ -156,6 +168,9 @@ void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
   salida = fopen(fileout,"w");
   if (salida==NULL){
     fclose(entrada);
+    mpz_clear(a1);
+    mpz_clear(b1);
+    mpz_clear(m1);
     printf("Error al abrir el fichero de salida");
     return;
   }
@@ -166,20 +181,26 @@ void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
 
   if(textoCifrado == NULL){
     printf("Error reservando memoria para la cadena");
+    mpz_clear(a1);
+    mpz_clear(b1);
+    mpz_clear(m1);
     fclose(salida);
     fclose(entrada);
     return;
   }
 
-  mpz_init(a1);
+  mpz_init(a_aux);
   mpz_init(resultado);
   mpz_init(total);
 
-  euclidean(resultado,a,m);
+  euclidean(resultado,a1,m1);
   mcd = mpz_get_ui(resultado);
 
   if(mcd!=1){
     printf("No existe inverso multiplicativo de a");
+    mpz_clear(a1);
+    mpz_clear(b1);
+    mpz_clear(m1);
     free(textoPlano);
     free(textoCifrado);
     fclose(salida);
@@ -190,17 +211,20 @@ void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
 
   for (i=0; i<strlen(textoPlano); i++){
     x = textoPlano[i];
-    mpz_mul_ui(a1,a,x);
-    mpz_add(a1,a1,b);
-    mpz_mod(total,a1,m);
+    mpz_mul_ui(a_aux,a1,x);
+    mpz_add(a_aux,a_aux,b1);
+    mpz_mod(total,a_aux,m1);
     mpz_add_ui(total,total,65);
     textoCifrado[i] = mpz_get_ui(total);
     fprintf(salida,"%c", textoCifrado[i]);
   }
 
-  mpz_clear(a1);
+  mpz_clear(a_aux);
   mpz_clear(resultado);
   mpz_clear(total);
+  mpz_clear(a1);
+  mpz_clear(b1);
+  mpz_clear(m1);
   free(textoCifrado);
   free(textoPlano);
   fclose(salida);
@@ -210,8 +234,8 @@ void cifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
 
 }
 
-void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
-  mpz_t inverso,b1,mul,total;
+void descifrarAfin(int m, int a, int b, char* filein, char* fileout){
+  mpz_t m1,a1,b1,inverso,b_aux,mul,total;
   int i,sumando,modulo,negativo;
   long int longitud;
   char x;
@@ -240,28 +264,35 @@ void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
     fclose(salida);
     return;
   }
+
   fscanf(entrada,"%s",textoDescifrado);
 
-  mpz_init(inverso);
+  mpz_init(a1);
+  mpz_init(m1);
   mpz_init(b1);
+  mpz_set_ui(a1,a);
+  mpz_set_ui(b1,b);
+  mpz_set_ui(m1,m);
+  mpz_init(inverso);
+  mpz_init(b_aux);
   mpz_init(mul);
   mpz_init(total);
-  mpz_invert(inverso,a,m);
+  mpz_invert(inverso,a1,m1);
 
-  modulo = mpz_get_ui(m);
+
   for (i=0; i<strlen(textoDescifrado); i++){
     x = textoDescifrado[i]-65;
-    mpz_ui_sub(b1,x,b);
-    negativo = mpz_get_ui(b1);
+    mpz_ui_sub(b_aux,x,b1);
+    negativo = mpz_get_ui(b_aux);
     while(negativo<0){
-      mpz_add(b1,b1,m);
+      mpz_add(b_aux,b_aux,m1);
       negativo += modulo;
     }
-    mpz_mul(mul,inverso,b1);
-    mpz_mod(total,mul,m);
+    mpz_mul(mul,inverso,b_aux);
+    mpz_mod(total,mul,m1);
     sumando = mpz_get_ui(total);
     while(sumando<65){
-      sumando += modulo;
+      sumando += m;
     }
     textoDescifrado[i] = sumando;
     fprintf(salida,"%c", textoDescifrado[i]);
@@ -271,16 +302,18 @@ void descifrarAfin(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
   mpz_clear(b1);
   mpz_clear(mul);
   mpz_clear(total);
+  mpz_clear(a1);
+  mpz_clear(b1);
+  mpz_clear(m1);
   free(textoDescifrado);
   fclose(salida);
   fclose(entrada);
 
 }
 
-
-void cifrarAfinRobusto(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
-  mpz_t a1,total,resultado;
-  int i, mcd, contador=0;
+void cifrarAfinRobusto(int m, int a, int b, char* filein, char* fileout){
+  mpz_t m1,a1,b1,a_aux,total,resultado;
+  int i, mcd;
   long int longitud;
   FILE* entrada;
   FILE* salida;
@@ -288,9 +321,19 @@ void cifrarAfinRobusto(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
   char x, c;
   struct stat fileStat;
 
+  mpz_init(a1);
+  mpz_init(m1);
+  mpz_init(b1);
+  mpz_set_ui(a1,a);
+  mpz_set_ui(b1,b);
+  mpz_set_ui(m1,m);
+
   entrada = fopen(filein, "r");
   if (entrada==NULL){
     printf("Error al abrir el fichero de lectura");
+    mpz_clear(a1);
+    mpz_clear(b1);
+    mpz_clear(m1);
     return;
   }
 
@@ -299,36 +342,39 @@ void cifrarAfinRobusto(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
   salida = fopen(fileout,"w");
   if (salida==NULL){
     fclose(entrada);
+    mpz_clear(a1);
+    mpz_clear(b1);
+    mpz_clear(m1);
     printf("Error al abrir el fichero de salida");
     return;
   }
 
   textoPlano = (char*)malloc(sizeof(char)*longitud);
-  if(textoPlano == NULL){
-    printf("Error reservando memoria para la cadena que contiene el texto plano");
-    fclose(salida);
-    fclose(entrada);
-    return;
-  }
   fscanf(entrada,"%s", textoPlano);
-
   textoCifrado = (char*)malloc(sizeof(char)*(strlen(textoPlano)+1));
+
   if(textoCifrado == NULL){
-    printf("Error reservando memoria para la cadena que contendrá el cifrado");
+    printf("Error reservando memoria para la cadena");
+    mpz_clear(a1);
+    mpz_clear(b1);
+    mpz_clear(m1);
     fclose(salida);
     fclose(entrada);
     return;
   }
 
-  mpz_init(a1);
+  mpz_init(a_aux);
   mpz_init(resultado);
   mpz_init(total);
 
-  euclidean(resultado,a,m);
+  euclidean(resultado,a1,m1);
   mcd = mpz_get_ui(resultado);
 
   if(mcd!=1){
     printf("No existe inverso multiplicativo de a");
+    mpz_clear(a1);
+    mpz_clear(b1);
+    mpz_clear(m1);
     free(textoPlano);
     free(textoCifrado);
     fclose(salida);
@@ -336,19 +382,23 @@ void cifrarAfinRobusto(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
     return;
   }
 
+
   for (i=0; i<strlen(textoPlano); i++){
     x = textoPlano[i];
-    mpz_mul_ui(a1,a,x);
-    mpz_add(a1,a1,b);
-    mpz_mod(total,a1,m);
+    mpz_mul_ui(a_aux,a1,x);
+    mpz_add(a_aux,a_aux,b1);
+    mpz_mod(total,a_aux,m1);
     mpz_add_ui(total,total,32);
     textoCifrado[i] = mpz_get_ui(total);
     fprintf(salida,"%c", textoCifrado[i]);
   }
 
-  mpz_clear(a1);
+  mpz_clear(a_aux);
   mpz_clear(resultado);
   mpz_clear(total);
+  mpz_clear(a1);
+  mpz_clear(b1);
+  mpz_clear(m1);
   free(textoCifrado);
   free(textoPlano);
   fclose(salida);
@@ -358,8 +408,8 @@ void cifrarAfinRobusto(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
 
 }
 
-void descifrarAfinRobusto(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout){
-  mpz_t inverso,b1,mul,total;
+void descifrarAfinRobusto(int m, int a, int b, char* filein, char* fileout){
+  mpz_t m1,a1,b1,inverso,b_aux,mul,total;
   int i,sumando,modulo,negativo;
   long int longitud;
   char x;
@@ -388,28 +438,35 @@ void descifrarAfinRobusto(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout
     fclose(salida);
     return;
   }
+
   fscanf(entrada,"%s",textoDescifrado);
 
-  mpz_init(inverso);
+  mpz_init(a1);
+  mpz_init(m1);
   mpz_init(b1);
+  mpz_set_ui(a1,a);
+  mpz_set_ui(b1,b);
+  mpz_set_ui(m1,m);
+  mpz_init(inverso);
+  mpz_init(b_aux);
   mpz_init(mul);
   mpz_init(total);
-  mpz_invert(inverso,a,m);
+  mpz_invert(inverso,a1,m1);
 
-  modulo = mpz_get_ui(m);
+
   for (i=0; i<strlen(textoDescifrado); i++){
     x = textoDescifrado[i]-32;
-    mpz_ui_sub(b1,x,b);
-    negativo = mpz_get_ui(b1);
+    mpz_ui_sub(b_aux,x,b1);
+    negativo = mpz_get_ui(b_aux);
     while(negativo<0){
-      mpz_add(b1,b1,m);
+      mpz_add(b_aux,b_aux,m1);
       negativo += modulo;
     }
-    mpz_mul(mul,inverso,b1);
-    mpz_mod(total,mul,m);
+    mpz_mul(mul,inverso,b_aux);
+    mpz_mod(total,mul,m1);
     sumando = mpz_get_ui(total);
     while(sumando<32){
-      sumando += modulo;
+      sumando += m;
     }
     textoDescifrado[i] = sumando;
     fprintf(salida,"%c", textoDescifrado[i]);
@@ -419,32 +476,11 @@ void descifrarAfinRobusto(mpz_t a, mpz_t b, mpz_t m, char* filein, char* fileout
   mpz_clear(b1);
   mpz_clear(mul);
   mpz_clear(total);
+  mpz_clear(a1);
+  mpz_clear(b1);
+  mpz_clear(m1);
   free(textoDescifrado);
   fclose(salida);
   fclose(entrada);
 
-}
-
-int main(){
-    mpz_t a,b,m;
-    char fichero[100]="fichero.txt";
-    char cifrado[100]="cifrado.txt";
-    char plano[100]="plano.txt";
-
-    mpz_init(a);
-    mpz_init(b);
-    mpz_init(m);
-
-    mpz_set_str (a,"5",10);
-    mpz_set_str (b,"1",10);
-    mpz_set_str (m,"27",10);
-
-
-
-    cifrarAfin(a,b,m,fichero,cifrado);
-    descifrarAfin(a,b,m,cifrado,plano);
-
-
-
-return 0;
 }

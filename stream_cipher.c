@@ -16,12 +16,10 @@ int cifrado_j;
 
 void swap(unsigned char *x, unsigned char *y){
 	char aux;
-
   aux=*x;
 	*x=*y;
 	*y=aux;
 }
-
 
 int cifradoFlujo(void){
 	int i;
@@ -29,7 +27,6 @@ int cifradoFlujo(void){
 	for(i=0 ; i<N; i++){
 		s[i] = i;
   }
-
   /*Reseteamos el valor*/
 	cifrado_i=0;
   cifrado_j=0;
@@ -47,12 +44,9 @@ int generateKey(unsigned char *key, int longitud){
 
 	cifrado_i = 0;
   cifrado_j = 0;
-
 }
 
-
 char permutacion(void){
-
 	cifrado_i = (cifrado_i +1 ) % N;
 	cifrado_j = (cifrado_j + s[cifrado_i]) % N;
 	swap(&s[cifrado_i], &s[cifrado_j]);
@@ -67,7 +61,6 @@ int main(int argc, char **argv){
     printf("Error con los argumentos, que deberia ser de la forma: <fichero entrada> <fichero salida> <clave>");
     return -1;
   }
-
 
 	int entrada, salida, longitud, leidos = 1;;
 	unsigned char *key;
