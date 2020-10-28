@@ -3,15 +3,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include<strings.h>
 #include <unistd.h>
 #include <gmp.h>
 #include <ctype.h>
+#include <fcntl.h>
+#include<sys/types.h>
+#include<sys/stat.h>
 
 #define ERR -1
 #define OK 1
 #define NO_PUNCT 0
 #define TRUE 1
 #define FALSE 0
+#define N 256
 
 #define MAX_KEY 20
 #define MAX_WORDS 25
@@ -27,14 +32,155 @@
 #define MAX_PERM 100
 #define PAD_LETTER 'X'
 
+/******************************************************************************
+*******************************************************************************
+Function
+Name: euclidean
+IN:   mpz_t resultado  - mpz with the result
+      mpz_t a     - mpz a
+      mpz_t b     - mpz b
+OUT:  void
+Desc: Returns the gcd between a and b by applying Euclidean algorithm
+*******************************************************************************
+*******************************************************************************/
 void euclidean(mpz_t resultado, mpz_t a, mpz_t b);
+
+/******************************************************************************
+*******************************************************************************
+Function
+Name: euclideanExtended
+IN:   mpz_t resultado  - mpz with the result
+      mpz_t a     - mpz a
+      mpz_t b     - mpz b
+OUT:  void
+Desc: Returns the gcd between a and b by applying Euclidean Extended algorithm
+*******************************************************************************
+*******************************************************************************/
 void euclideanExtended(mpz_t resultado, mpz_t a, mpz_t b);
+
+/******************************************************************************
+*******************************************************************************
+Function
+Name: cifrarAfin
+IN:  int m  - module
+     int a  - integer a
+     int b  - integer b
+     char*  - name of file in
+     char*  - name of file out
+OUT:  void
+Desc: Ciphers a file by aphine method, using mpz instead of integers. Alphabet
+starts on 65 (character ASCII of A)
+*******************************************************************************
+*******************************************************************************/
 void cifrarAfin(int m, int a, int b, char* entrada, char* salida);
+/******************************************************************************
+*******************************************************************************
+Function
+Name: descifrarAfin
+IN:  int m  - module
+     int a  - integer a
+     int b  - integer b
+     char*  - name of file in
+     char*  - name of file out
+OUT:  void
+Desc: Deciphers a file by aphine method, using mpz instead of integers. Alphabet
+starts on 65 (character ASCII of A)
+*******************************************************************************
+*******************************************************************************/
 void descifrarAfin(int m, int a, int b, char* entrada, char* salida);
+/******************************************************************************
+*******************************************************************************
+Function
+Name: findSize
+IN:   char*  - file_name
+OUT:  long int
+Desc: Finds the size of a file
+*******************************************************************************
+*******************************************************************************/
 long int findSize(const char* file_name);
+/******************************************************************************
+*******************************************************************************
+Function
+Name: comprobarInyectividad
+IN:   mpz_t m     - mpz with the result
+      mpz_t a     - mpz a
+      mpz_t b     - mpz b
+
+OUT:  1 if yes, 0 if not
+Desc: Checks whether a and b defines an inyective function
+*******************************************************************************
+*******************************************************************************/
 int comprobarInyectividad(mpz_t a, mpz_t b, mpz_t m);
+/******************************************************************************
+*******************************************************************************
+Function
+Name: cifrarAfinRobusto
+IN:  int m  - module
+     int a  - integer a
+     int b  - integer b
+     char*  - name of file in
+     char*  - name of file out
+OUT:  void
+Desc: Ciphers a file by aphine method but a bit stronger, using mpz instead of integers.
+*******************************************************************************
+*******************************************************************************/
 void cifrarAfinRobusto(int m, int a, int b, char* entrada, char* salida);
+/******************************************************************************
+*******************************************************************************
+Function
+Name: descifrarAfinRobusto
+IN:  int m  - module
+     int a  - integer a
+     int b  - integer b
+     char*  - name of file in
+     char*  - name of file out
+OUT:  void
+Desc: Deciphers a file by aphine method but a bit stronger, using mpz instead of integers.
+*******************************************************************************
+*******************************************************************************/
 void descifrarAfinRobusto(int m, int a, int b, char* entrada, char* salida);
+/******************************************************************************
+*******************************************************************************
+Function
+Name: swap
+IN:  unsigned char* x -
+     unsigned char* y -
+OUT:  void
+Desc: Swaps x and y, using an auxiliar variable to do so
+*******************************************************************************
+*******************************************************************************/
+void swap(unsigned char *x, unsigned char *y);
+/******************************************************************************
+*******************************************************************************
+Function
+Name: cifradoFlujo
+IN:  void
+OUT:  int
+Desc: Stream cipher RC4
+*******************************************************************************
+*******************************************************************************/
+int cifradoFlujo(void);
+/******************************************************************************
+*******************************************************************************
+Function
+Name: generateKey
+IN:  unsigned char* key - key to start stream cipher introduced by user
+     int longitud
+OUT:  int
+Desc: Generate keys for the stream cipher
+*******************************************************************************
+*******************************************************************************/
+int generateKey(unsigned char *key, int longitud);
+/******************************************************************************
+*******************************************************************************
+Function
+Name: permutacion
+IN:  void
+OUT:  char
+Desc: Function that generates permutations
+*******************************************************************************
+*******************************************************************************/
+char permutacion(void);
 
 /******************************************************************************
 *******************************************************************************
