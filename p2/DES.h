@@ -20,9 +20,9 @@
 
 
 
-void anyadeBit(uint64_t *destino, uint64_t origen, int posicion_origen, int posicion_destino);
+void cambiaBit(uint64_t *destino, uint64_t origen, int posicion_origen, int posicion_destino);
 void permutacion(uint64_t* info, bool es_inicial);
-void encripta(uint64_t* key, uint64_t* siguente_key, int ronda);
+void creaSubkeys(uint64_t* key, uint64_t* siguente_key, int ronda);
 void rondas(uint64_t *info, uint64_t key);
 
 #endif

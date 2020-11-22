@@ -124,10 +124,14 @@ static const unsigned short S_BOXES[NUM_S_BOXES][ROWS_PER_SBOX][COLUMNS_PER_SBOX
 
 //uint64_t unsigned integer type with width of exactly 8, 16, 32 and 64 bits respectively
 //Coge el bit posicion_origen de origen y lo coloca en la posicion_destino de destino
-void anyadeBit(uint64_t *destino, uint64_t origen, int posicion_origen, int posicion_destino){
-    if(((origen << (posicion_origen)) & FIRSTBIT) != 0)
-        *destino += (FIRSTBIT >> posicion_destino);
+//ARREGLAR EL SEGMENTATION FAULT
+void cambiaBit(uint64_t *destino, uint64_t origen, int posicion_origen, int posicion_destino){
+    //left-shift 1 p1 and p2 times and using XOR
+    origen ^= 1 << posicion_origen;
+    origen ^= 1 << posicion_destino;
+    *destino += origen; 
 }
+
 
 // Realiza la permutacion IP o IP_INV dependiendo del valor de es_inicial
 void permutacion(uint64_t* info, bool es_inicial){
@@ -135,16 +139,15 @@ void permutacion(uint64_t* info, bool es_inicial){
     int i;
     for(i = 0; i < 64; i++){
         if(es_inicial)
-            anyadeBit(&aux, *info, IP[i] - 1, i);
+            cambiaBit(&aux, *info, IP[i] - 1, i);
         else
-            anyadeBit(&aux, *info, IP_INV[i] - 1, i);
+            cambiaBit(&aux, *info, IP_INV[i] - 1, i);
     }
     *info = aux;
 }
 
 //Genera las subkeys para cada ronda
-
-void encripta(uint64_t* key, uint64_t* siguente_key, int ronda){
+void creaSubkeys(uint64_t* key, uint64_t* siguente_key, int ronda){
     uint64_t key_izq = 0, key_dcha = 0, key_izq_aux = 0, key_dcha_aux = 0;
     int i;
     *siguente_key = 0;
@@ -153,9 +156,9 @@ void encripta(uint64_t* key, uint64_t* siguente_key, int ronda){
     if(ronda == 0){
         for(int i = 0; i < 56; i++){
             if(i < 28)
-                anyadeBit(&key_izq, *key, PC1[i] - 1, i);
+                cambiaBit(&key_izq, *key, PC1[i] - 1, i);
             else
-                anyadeBit(&key_dcha, *key, PC1[i] - 1, i % 28);
+                cambiaBit(&key_dcha, *key, PC1[i] - 1, i % 28);
         }
     }
     // Otras rondas que no es la primera? => Separa la key en dos mitades.
@@ -163,9 +166,9 @@ void encripta(uint64_t* key, uint64_t* siguente_key, int ronda){
     {
         for(i = 0; i < 56; i++){
             if(i < 28)
-                anyadeBit(&key_izq, *key, i, i);
+                cambiaBit(&key_izq, *key, i, i);
             else
-                anyadeBit(&key_dcha, *key, i, i % 28);
+                cambiaBit(&key_dcha, *key, i, i % 28);
         }
     }
 
@@ -181,16 +184,16 @@ void encripta(uint64_t* key, uint64_t* siguente_key, int ronda){
     // Combina 2 keys en 1 (siguiente_key) que será usada en las próximas rondas
     for(i = 0; i < 56; i++){
         if(i < 28)
-            anyadeBit(siguente_key, key_izq_aux, i, i);
+            cambiaBit(siguente_key, key_izq_aux, i, i);
         else
-            anyadeBit(siguente_key, key_dcha_aux, (i % 28), i);
+            cambiaBit(siguente_key, key_dcha_aux, (i % 28), i);
     }
 
     // PC-2 como último paso antes de devolverla
     *key = 0;
 
     for(i = 0; i < 48; i++)
-        anyadeBit(key, *siguente_key, PC2[i] - 1, i);
+        cambiaBit(key, *siguente_key, PC2[i] - 1, i);
 }
 
 void rondas(uint64_t *info, uint64_t key){
@@ -199,7 +202,7 @@ void rondas(uint64_t *info, uint64_t key){
 
     // Expandimos el bloque (función E)
     for(int i = 0; i < 48; i++)
-        anyadeBit(&bloque_derecho, *info, (E[i] + 31), i);
+        cambiaBit(&bloque_derecho, *info, (E[i] + 31), i);
 
     // Hacemos XOR con la key 
     bloque_derecho = bloque_derecho ^ key;
@@ -229,7 +232,7 @@ void rondas(uint64_t *info, uint64_t key){
     bloque_derecho_aux = 0;
 
     for(int i = 0; i < 32; i++)
-        anyadeBit(&bloque_derecho_aux, bloque_derecho, P[i] - 1, i);
+        cambiaBit(&bloque_derecho_aux, bloque_derecho, P[i] - 1, i);
 
     bloque_derecho = bloque_derecho_aux;
 

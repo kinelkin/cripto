@@ -104,6 +104,7 @@ int main(int argc, char ** argv){
 
     //Si el fichero de entrada no es múltiplo de 64, lo rellenamos para que así sea de 0 y 1 aleatoriamente
     input = fopen(argv[optind], "a+");
+    //capitalize? y entonces añadir 0-1 al final
     c = fgetc(input);
     contador += 1;
     while (c != EOF){
@@ -131,6 +132,7 @@ int main(int argc, char ** argv){
         exit(EXIT_FAILURE);
     }
 
+    
     uint64_t a_key[16], siguiente_key, data;
     size_t amount; 
     a_key[0] = key;
@@ -138,12 +140,12 @@ int main(int argc, char ** argv){
 
     //Obtenemos las 16 subkeys
     for(i = 0; i < 16; i++){
-        encripta(&a_key[i], &siguiente_key, i);
+        creaSubkeys(&a_key[i], &siguiente_key, i);
         if(i != 15)
             a_key[i + 1] = siguiente_key;
     }
     
-    while((amount = fread(&data, 1, 8, input)) > 0){
+    while((amount = fread(cambiaBit(&data, 1, 8, input)) > 0){
         if(amount != 8)
             data = data << (8 * (8 - amount));
 
@@ -177,10 +179,10 @@ int main(int argc, char ** argv){
 
 
         //Lo escribimos en el fichero de salida
-        fwrite(&data, 1, amount, salida);
+        fprintf(salida,"%ln",&data);
         data = 0;
     }
-
+ 
     fclose(input);
     fclose(salida);
 
