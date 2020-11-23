@@ -145,7 +145,7 @@ int main(int argc, char ** argv){
             a_key[i + 1] = siguiente_key;
     }
     
-    while((amount = fread(cambiaBit(&data, 1, 8, input)) > 0){
+    while((amount = fread(&data, 1, 8, input)) > 0){
         if(amount != 8)
             data = data << (8 * (8 - amount));
 
@@ -188,3 +188,5 @@ int main(int argc, char ** argv){
 
     return EXIT_SUCCESS;
 }
+
+

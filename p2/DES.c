@@ -124,12 +124,26 @@ static const unsigned short S_BOXES[NUM_S_BOXES][ROWS_PER_SBOX][COLUMNS_PER_SBOX
 
 //uint64_t unsigned integer type with width of exactly 8, 16, 32 and 64 bits respectively
 //Coge el bit posicion_origen de origen y lo coloca en la posicion_destino de destino
-//ARREGLAR EL SEGMENTATION FAULT
 void cambiaBit(uint64_t *destino, uint64_t origen, int posicion_origen, int posicion_destino){
-    //left-shift 1 p1 and p2 times and using XOR
-    origen ^= 1 << posicion_origen;
-    origen ^= 1 << posicion_destino;
-    *destino += origen; 
+    uint64_t bit_origen, bit_destino;
+
+    bit_origen = origen & (1 << posicion_origen);
+    bit_destino = origen & (1 << posicion_destino);
+
+    origen ^= bit_origen;
+    origen ^= bit_destino;
+
+    if(posicion_destino >= posicion_origen){
+        origen |= bit_origen << (posicion_destino - posicion_origen);
+        origen |= bit_destino >> (posicion_destino - posicion_origen);
+    }
+    else{
+        origen |= bit_origen >> (posicion_origen - posicion_destino);
+        origen |= bit_destino << (posicion_origen - posicion_destino);
+    }
+
+    *destino = origen;
+
 }
 
 
@@ -197,11 +211,11 @@ void creaSubkeys(uint64_t* key, uint64_t* siguente_key, int ronda){
 }
 
 void rondas(uint64_t *info, uint64_t key){
-    uint64_t bloque_derecho = 0, bloque_derecho_aux = 0;
-    int i, j, x, y, sustitucion;
+    uint64_t bi = 0, x = 0, y = 0, sustitucion = 0, bloque_derecho = 0, resultado = 0;
+    int i;
 
     // Expandimos el bloque (función E)
-    for(int i = 0; i < 48; i++)
+    for(i = 0; i < 48; i++)
         cambiaBit(&bloque_derecho, *info, (E[i] + 31), i);
 
     // Hacemos XOR con la key 
@@ -209,32 +223,26 @@ void rondas(uint64_t *info, uint64_t key){
 
     // Hacemos la sustitucion
     for(i = 0; i < 8; i++){
-        x = ((bloque_derecho << 6 * i) & FIRSTBIT) == FIRSTBIT ? 2 : 0;
-        if( ((bloque_derecho << (6 * i + 5)) & FIRSTBIT) == FIRSTBIT)
-            x++;
-
-        y = 0;
-        for(j = 1; j < 5; j++){
-            if( ((bloque_derecho << (6 * i + j)) & FIRSTBIT) == FIRSTBIT){
-                y += pow(2,4 - j);
-            }
-        }
+        
+        bi = ((63 << (6 * i)) & bloque_derecho) >> (6 * i);
+        y = ((15 << 1) & bi) >> 1;
+        cambiaBit(&x, bloque_derecho, 1, 5);
+        x &= 3;
 
         sustitucion = S_BOXES[i][x][y];
-        sustitucion = sustitucion << (60 - (4 * i));
-        bloque_derecho_aux += sustitucion;
+        resultado |= sustitucion << (4 * i);
     }
 
     // Ya tendríamos el bloque derecho terminado
-    bloque_derecho = bloque_derecho_aux;
+    bloque_derecho = resultado;
 
     // Permutamos
-    bloque_derecho_aux = 0;
+    resultado = 0;
 
-    for(int i = 0; i < 32; i++)
-        cambiaBit(&bloque_derecho_aux, bloque_derecho, P[i] - 1, i);
+    for(i = 0; i < 32; i++)
+        cambiaBit(&resultado, bloque_derecho, P[i] - 1, i);
 
-    bloque_derecho = bloque_derecho_aux;
+    bloque_derecho = resultado;
 
     // XOR con el bloque izquierdo
     bloque_derecho = bloque_derecho ^ *info;
