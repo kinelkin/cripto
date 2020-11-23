@@ -49,7 +49,7 @@ static void genera_clave(uint64_t* key){
 
 
     for(i = 0; i < 16; i++){
-        encripta(&aux_key[i], &next_key, i);
+        creaSubkeys(&aux_key[i], &next_key, i);
         if(i != 15)
             aux_key[i + 1] = next_key;
     }

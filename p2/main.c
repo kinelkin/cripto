@@ -32,7 +32,7 @@ int main(int argc, char ** argv){
     uint64_t key = 0;
     bool encrypt = true;
     FILE * input = NULL;
-	int i, c, contador=0;
+	int i, contador=0;
     int optc = 0;
     const char* short_opts = "dehk:o:";
     const struct option long_opts[] =
@@ -105,12 +105,9 @@ int main(int argc, char ** argv){
     //Si el fichero de entrada no es múltiplo de 64, lo rellenamos para que así sea de 0 y 1 aleatoriamente
     input = fopen(argv[optind], "a+");
     //capitalize? y entonces añadir 0-1 al final
-    c = fgetc(input);
-    contador += 1;
-    while (c != EOF){
-        c = fgetc(input);
-        contador += 1;
-    }
+    fseek(input, 0, SEEK_END);
+    contador = ftell(input);
+    rewind(input);
 
     while((contador % 65) != 0){
         contador +=1;
@@ -133,22 +130,24 @@ int main(int argc, char ** argv){
     }
 
     
-    uint64_t a_key[16], siguiente_key, data;
+    uint64_t a_key[16], vector_inicializacion, siguiente_key, data;
     size_t amount; 
     a_key[0] = key;
-
+    
 
     //Obtenemos las 16 subkeys
     for(i = 0; i < 16; i++){
         creaSubkeys(&a_key[i], &siguiente_key, i);
-        if(i != 15)
+        printf("%ln", &a_key[i]);
+        if(i != 15){
             a_key[i + 1] = siguiente_key;
+        }
     }
     
+    /*
     while((amount = fread(&data, 1, 8, input)) > 0){
         if(amount != 8)
             data = data << (8 * (8 - amount));
-
         //Permutacion inicial
         permutacion(&data, true);
 
@@ -177,14 +176,13 @@ int main(int argc, char ** argv){
         if(amount != 8)
             data = data << (8 * (8 - amount));
 
-
         //Lo escribimos en el fichero de salida
-        fprintf(salida,"%ln",&data);
+        fprintf(salida,"%ld", data);
         data = 0;
     }
  
     fclose(input);
-    fclose(salida);
+    fclose(salida);*/
 
     return EXIT_SUCCESS;
 }

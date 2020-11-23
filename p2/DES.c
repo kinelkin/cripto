@@ -125,7 +125,7 @@ static const unsigned short S_BOXES[NUM_S_BOXES][ROWS_PER_SBOX][COLUMNS_PER_SBOX
 //uint64_t unsigned integer type with width of exactly 8, 16, 32 and 64 bits respectively
 //Coge el bit posicion_origen de origen y lo coloca en la posicion_destino de destino
 void cambiaBit(uint64_t *destino, uint64_t origen, int posicion_origen, int posicion_destino){
-    uint64_t bit_origen, bit_destino;
+    uint64_t bit_origen = 0, bit_destino = 0;
 
     bit_origen = origen & (1 << posicion_origen);
     bit_destino = origen & (1 << posicion_destino);
@@ -162,27 +162,48 @@ void permutacion(uint64_t* info, bool es_inicial){
 
 //Genera las subkeys para cada ronda
 void creaSubkeys(uint64_t* key, uint64_t* siguente_key, int ronda){
-    uint64_t key_izq = 0, key_dcha = 0, key_izq_aux = 0, key_dcha_aux = 0;
+    uint64_t key_izq = 0, key_dcha = 0, key_izq_aux = 0, key_dcha_aux = 0, aux = 0;
     int i;
     *siguente_key = 0;
 
     // Primera ronda? Entonces => PC-1 
     if(ronda == 0){
-        for(int i = 0; i < 56; i++){
-            if(i < 28)
-                cambiaBit(&key_izq, *key, PC1[i] - 1, i);
-            else
-                cambiaBit(&key_dcha, *key, PC1[i] - 1, i % 28);
+        for(i = 0; i < 56; i++){
+            if(i < 28){
+                aux = 1 << (PC1[i] - 1); 
+                printf("UNO %ld\n",aux);
+                aux &= *key;
+                printf("DOS %ld\n",aux);
+                aux = (1 >> (PC1[i] - 1));
+                printf("TRES %ld\n",aux);
+                aux = (aux << i);
+                printf("CUATRO %ld\n",aux);
+                key_dcha |= aux;
+            }
+            else{
+                aux = 1 << (PC1[i] - 1); 
+                printf("UNO %ld\n",aux);
+                aux &= *key;
+                printf("DOS %ld\n",aux);
+                aux = (1 >> (PC1[i] - 1));
+                printf("TRES %ld\n",aux);
+                aux = (aux << (i % 28));
+                printf("CUATRO %ld\n",aux);
+                key_izq |= aux;
+            }
         }
+        printf("%ld\n", key_izq);
+        printf("%ld\n", key_dcha);
     }
+
     // Otras rondas que no es la primera? => Separa la key en dos mitades.
     else
     {
         for(i = 0; i < 56; i++){
             if(i < 28)
-                cambiaBit(&key_izq, *key, i, i);
+                cambiaBit(&key_dcha, *key, i, i);
             else
-                cambiaBit(&key_dcha, *key, i, i % 28);
+                cambiaBit(&key_izq, *key, i, i % 28);
         }
     }
 
@@ -216,7 +237,7 @@ void rondas(uint64_t *info, uint64_t key){
 
     // Expandimos el bloque (función E)
     for(i = 0; i < 48; i++)
-        cambiaBit(&bloque_derecho, *info, (E[i] + 31), i);
+        cambiaBit(&bloque_derecho, *info, E[i], i);
 
     // Hacemos XOR con la key 
     bloque_derecho = bloque_derecho ^ key;
