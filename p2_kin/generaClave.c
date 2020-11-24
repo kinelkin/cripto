@@ -7,8 +7,6 @@
 
 #include "DES.h"
 
-
-
 void convertToBinary(int n){
 	int i, k, m;
 	for (i = 7; i >= 0; i--) {
