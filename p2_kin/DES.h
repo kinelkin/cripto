@@ -31,7 +31,7 @@ long long array_to_long(long int array[], int len);
 void Encryption(long int plain[], long int iv);
 void Decryption(long int plain[]);
 void convertToBits(int ch[]);
-int bitToChar(FILE* f);
+int bitToChar(char* filename);
 void bitToChar_dec(FILE *out, long long a);
 void key56to48(int round, int pos, int text);
 int key64to56(int pos, int text);

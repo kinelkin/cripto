@@ -454,12 +454,12 @@ void convertToBits(int ch[]){
 
 //...and then writes it into a file "result", which will be the final result
 // int bitToChar(char* filename){
-int bitToChar(FILE *out){
-	// out = fopen(filename, "ab+");
-	// if(out == NULL){
-  //       fprintf(stderr, "Error opening the output file in bitToChar\n");
-  //       return -1;
-  //   }
+int bitToChar(char *filename){
+	out = fopen(filename, "ab+");
+	if(out == NULL){
+	    fprintf(stderr, "Error opening the output file in bitToChar\n");
+		return -1;
+  	}
 	for (int i = 0; i < 64; i = i + 8)
 		convertToBits(&ENCRYPTED[i]);
 	fclose(out);
@@ -568,7 +568,7 @@ void encrypt(long int n, long int iv){
 		}
 		Encryption(plain + 64 * i, aux);
 		aux = array_to_long((long *)ENCRYPTED, 64);
-		bitToChar(FOUT);
+		bitToChar("cipher.txt");
 	}
 
 	fclose(F_IN);
@@ -603,7 +603,7 @@ void decrypt(long int n, long int iv){
 		Decryption(plain + i * 64);
 		aux = array_to_long((long *)ENCRYPTED, 64);
 		XOR(aux, aux2);
-		bitToChar(f_tp);
+		bitToChar("result.txt");
 	}
 
 	fclose(F_IN);
