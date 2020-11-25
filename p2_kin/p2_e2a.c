@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
 
     iv_long = 0;
     /*Transfrom IV to a number*/
-    printf("\n%s",argv[2]);
+    // printf("\n%s",argv[2]);
     iv_long = 0;
     bit = 1;
     for(i=0; i<64; i++){
@@ -36,9 +36,8 @@ int main(int argc, char *argv[]){
       if(argv[2][i] == '1')
         iv_long = iv_long^bit;
     }
-    printf("\nIV == %lli or %llx", iv_long, iv_long);
+    // printf("\nIV == %lli or %llx", iv_long, iv_long);
 
-    return -1;
 
     if(length > 64){
         printf("IV too long, it should be 64 characters long");
