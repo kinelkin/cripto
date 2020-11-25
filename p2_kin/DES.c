@@ -707,7 +707,7 @@ void decryptTRIPLEDES(long int n, char* string){
     }
 	fclose(out);
 	
-	out = fopen("resultTRIPLE.txt", "wb+");
+	out = fopen("result.txt", "wb+");
 	if(out == NULL){
         fprintf(stderr, "Error opening result file in decrypt triple DES\n");
         return;

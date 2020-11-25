@@ -46,5 +46,4 @@ void decryptTRIPLEDES(long int n, char* string);
 void EncryptionTRIPLEDES(long int plain[]);
 void DecryptionTRIPLEDES(long int plain[]);
 int convertCharToBitTRIPLEDES(long int n, char* filename);
-
 #endif
