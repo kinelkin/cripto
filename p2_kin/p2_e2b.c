@@ -1,6 +1,6 @@
 #include "DES.h"
 
-/*int main(int argc, char *argv[]){
+int main(int argc, char *argv[]){
     FILE* file_in = NULL;
     unsigned int key[192];
     long int n, file_size;
@@ -53,4 +53,4 @@
     }
 
 	return 0;
-}*/
+}
