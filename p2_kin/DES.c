@@ -334,13 +334,15 @@ int convertCharToBit(long int n, char* filename){
 }
 
 //Perform the encryption doing the 16 rounds and writing the result on ENCRYPTED
-void Encryption(long int plain[]){
+int* Encryption(long int plain[], long int iv){
 	int i, j;
 	out = fopen("cipher.txt", "ab+");
 	if(out == NULL){
         fprintf(stderr, "Error opening the cipher file in Encryption\n");
-        return;
+        return -1;
     }
+
+	XOR(plain,iv);
 	for (i = 0; i < 64; i++)
 		initialPermutation(i, plain[i]);
 
@@ -366,17 +368,18 @@ void Encryption(long int plain[]){
 
 	for (i = 0; i < 64; i++)
 		fprintf(out, "%d", ENCRYPTED[i]);
+
 	fclose(out);
-	return;
+	return ENCRYPTED;
 }
 
 //Performs the 16 rounds but in the reserver way as before 
-void Decryption(long int plain[]){
+int* Decryption(long int plain[]){
 	int i, j;
 	out = fopen("decrypted.txt", "ab+");
 	if(out == NULL){
         fprintf(stderr, "Error opening the decrypted file in Decryption\n");
-        return;
+        return -1;
     }
 	for (i = 0; i < 64; i++)
 		initialPermutation(i, plain[i]);
@@ -405,7 +408,7 @@ void Decryption(long int plain[]){
 		fprintf(out, "%d", ENCRYPTED[i]);
 
 	fclose(out);
-	return;
+	return ENCRYPTED;
 }
 
 //Converts from bit to a char...
@@ -418,8 +421,8 @@ void convertToBits(int ch[]){
 }
 
 //...and then writes it into a file "result", which will be the final result
-int bitToChar(){
-	out = fopen("result.txt", "ab+");
+int bitToChar(char* filename){
+	out = fopen(filename, "ab+");
 	if(out == NULL){
         fprintf(stderr, "Error opening the output file in bitToChar\n");
         return -1;
@@ -498,9 +501,10 @@ void key64to48(unsigned int key[]){
 }
 
 //Performs the encryption reading from bits, where we have the character in bits
-void encrypt(long int n){
+void encrypt(long int n, long int iv){
 	FILE* F_IN = fopen("bits.txt", "rb");
-	long int plain[n * 64];
+	FILE* FOUT = fopen("cipher.txt", "wb");
+	long int plain[n * 64], aux;
 	int i = -1;
 	char ch;
 
@@ -513,18 +517,22 @@ void encrypt(long int n){
 		ch = getc(F_IN);
 		plain[++i] = ch - 48;
 	}
-
-	for (int i = 0; i < n; i++)
-		Encryption(plain + 64 * i);
+	
+	aux = Encryption(plain + 64 * i, iv);
+	for (int i = 0; i < n; i++){
+		aux = Encryption(plain + 64 * i, aux);
+		bitToChar(FOUT);
+	}
 
 	fclose(F_IN);
 	return;
 }
 
 //Performs the decryption reading from cipher.txt
-void decrypt(long int n){
+void decrypt(long int n, long int iv){
 	FILE* F_IN = fopen("cipher.txt", "rb");
-	long int plain[n * 64];
+	FILE* f_tp = fopen("result.txt",  "wb");
+	long int plain[n * 64], aux, aux2;
 	int i = -1;
 	char ch;
 
@@ -538,10 +546,16 @@ void decrypt(long int n){
 		plain[++i] = ch - 48;
 	}
 	
+	aux = Decryption(plain + i * 64);
+	XOR(aux, iv);
+
 	for (i = 0; i < n; i++) {
-		Decryption(plain + i * 64);
-		bitToChar();
+		aux2 = (plain + i *64);
+		aux = Decryption(plain + i * 64);
+		XOR(aux, aux2);
+		bitToChar(f_tp);
 	}
+
 	fclose(F_IN);
 	return;
 }
@@ -590,7 +604,7 @@ long int findFileSize(char* filename){
 *******************************************************************************/
 
 //Perform the encryption doing the 16 rounds and writing the result on ENCRYPTED, but this time saves it in temporal2 
-void EncryptionTRIPLEDES(long int plain[]){
+/*void EncryptionTRIPLEDES(long int plain[]){
 	int i, j;
 	out = fopen("temporal2.txt", "ab+");
 	if(out == NULL){
@@ -782,4 +796,4 @@ int convertCharToBitTRIPLEDES(long int n, char* filename){
 	fclose(out);
 	fclose(inp);
 	return 0;
-}
+}*/

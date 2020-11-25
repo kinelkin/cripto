@@ -19,20 +19,20 @@ int main(int argc, char *argv[]){
         return -1;
     }
 
-    /*iv = (unsigned char *)argv[2];
+    iv = (unsigned char *)argv[2];
     
 	length = strlen((char *)iv); 
 
     if(length > 64){
         printf("IV too long, it should be 64 characters long");
         return -1;
-    }*/
+    }
 
-    if((file_in = fopen(argv[2], "a")) == -1){
+    if((file_in = fopen(argv[3], "a")) == -1){
 		printf("Error reading file from args \n");
 		return -1;
 	}
-    file_size = findFileSize(argv[2]);
+    file_size = findFileSize(argv[3]);
     while(file_size % 8 != 0){
         fprintf(file_in,"%c",(rand()%36)+65);
         file_size += 1;
@@ -50,9 +50,9 @@ int main(int argc, char *argv[]){
     if(strcmp(argv[1],"e") || strcmp (argv[1],"d")){
         create16Keys();
 	    n = file_size / 8;
-	    convertCharToBit(n, argv[2]);
-	    encrypt(n);
-        decrypt(n);
+	    convertCharToBit(n, argv[3]);
+	    encrypt(n, argv[2]);
+        decrypt(n, argv[2]);
     }else{
         printf("Error, type e for encryption or d for decryption\n");
     }
