@@ -518,8 +518,12 @@ void encrypt(long int n, long int iv){
 		plain[++i] = ch - 48;
 	}
 	
-	aux = Encryption(plain + 64 * i, iv);
+
+
 	for (int i = 0; i < n; i++){
+		if(i = 0){
+			aux = Encryption(plain + 64 * i, iv);
+		}
 		aux = Encryption(plain + 64 * i, aux);
 		bitToChar(FOUT);
 	}
