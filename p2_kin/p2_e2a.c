@@ -1,0 +1,65 @@
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include "DES.h"
+
+
+int main(int argc, char *argv[]){
+    
+    FILE* file_in = NULL, *out = NULL;
+    unsigned char *iv;
+    int length, file_size;
+    long int n;
+
+    if(argc < 3) {
+        printf("Args error, it should be like: <iv> <f_in>");
+        return -1;
+    }
+
+    /*iv = (unsigned char *)argv[2];
+    
+	length = strlen((char *)iv); 
+
+    if(length > 64){
+        printf("IV too long, it should be 64 characters long");
+        return -1;
+    }*/
+
+    if((file_in = fopen(argv[2], "rb")) == -1){
+		printf("Error reading file from args \n");
+		return -1;
+	}
+    file_size = findFileSize();
+    while(file_size % 64 != 0){
+            printf("hola");
+            fprintf(file_in,"%c",(rand()%36)+64);
+            printf("adios");
+            file_size += 8;
+    }
+    fclose(file_in);
+    
+
+    // destroy contents of these files (from previous runs, if any)
+    out = fopen("cipher.txt", "wb+");
+	fclose(out);
+	out = fopen("result.txt", "wb+");
+	fclose(out);
+	out = fopen("decrypted.txt", "wb+");
+	fclose(out);
+
+    if(strcmp(argv[1],"e") || strcmp (argv[1],"d")){
+        create16Keys();
+	    n = findFileSize() / 8;
+	    convertCharToBit(n);
+	    encrypt(n);
+        decrypt(n);
+    }else{
+        printf("Error, type e for encryption or d for decryption\n");
+    }
+
+    
+	return 0;
+}

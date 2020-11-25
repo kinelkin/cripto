@@ -8,11 +8,11 @@
 
 int main(){
 
-    FILE* output = fopen("key.txt","w");
-    unsigned char key[65];
+    FILE* output = fopen("keyTRIPLE.txt","w");
+    unsigned char key[193];
     int i, flag_paridad = 0;
 
-    for (i=0; i<64; i++) {
+    for (i=0; i<192; i++) {
         if(i % 8 == 7){
             if(flag_paridad%2){
                 key[i] = '0';
@@ -30,7 +30,7 @@ int main(){
         }
 	}
 
-    key[64] = '\0';
+    key[192] = '\0';
 
     printf("Hemos generado una clave para ti: \n");
     printf("%s \n", key);

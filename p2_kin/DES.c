@@ -89,61 +89,70 @@ static const unsigned short P[BITS_IN_P] = {
 };
 
 //Separamos las S Boxes para una mejor visualización
-int S1[4][16] = {
-    14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5,  9,  0,  7,
-    0, 15,  7,  4, 14,  2, 13,  1, 10,  6, 12, 11,  9,  5,  3,  8,
-    4,  1, 14,  8, 13,  6,  2, 11, 15, 12,  9,  7,  3, 10,  5,  0,
-    15, 12,  8,  2,  4,  9,  1,  7,  5, 11,  3, 14, 10,  0,  6, 13
+static const unsigned short S1[4][16] = {
+    { 14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7 },
+	{ 0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8 },
+	{ 4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0 },
+	{ 15, 12, 8, 2, 4, 9, 1, 7, 5, 11, 3, 14, 10, 0, 6, 13 } 
 };
  
-int S2[4][16] = {
-    15,  1,  8, 14,  6, 11,  3,  4,  9,  7,  2, 13, 12,  0,  5, 10,
-     3, 13,  4,  7, 15,  2,  8, 14, 12,  0,  1, 10,  6,  9, 11,  5,
-     0, 14,  7, 11, 10,  4, 13,  1,  5,  8, 12,  6,  9,  3,  2, 15,
-    13,  8, 10,  1,  3, 15,  4,  2, 11,  6,  7, 12,  0,  5, 14,  9
+static const unsigned short S2[4][16] = {
+		{ 15, 1, 8, 14, 6, 11, 3, 4, 9, 7, 2, 13, 12, 0, 5, 10 },
+		{ 3, 13, 4, 7, 15, 2, 8, 14, 12, 0, 1, 10, 6, 9, 11, 5 },
+		{ 0, 14, 7, 11, 10, 4, 13, 1, 5, 8, 12, 6, 9, 3, 2, 15 },
+		{ 13, 8, 10, 1, 3, 15, 4, 2, 11, 6, 7, 12, 0, 5, 14, 9 }
 };
  
-int S3[4][16] = {
-    10,  0,  9, 14,  6,  3, 15,  5,  1, 13, 12,  7, 11,  4,  2,  8,
-    13,  7,  0,  9,  3,  4,  6, 10,  2,  8,  5, 14, 12, 11, 15,  1,
-    13,  6,  4,  9,  8, 15,  3,  0, 11,  1,  2, 12,  5, 10, 14,  7,
-     1, 10, 13,  0,  6,  9,  8,  7,  4, 15, 14,  3, 11,  5,  2, 12
+static const unsigned short S3[4][16] = {
+    { 10, 0, 9, 14, 6, 3, 15, 5, 1, 13, 12, 7, 11, 4, 2, 8 },
+	{ 13, 7, 0, 9, 3, 4, 6, 10, 2, 8, 5, 14, 12, 11, 15, 1 },
+	{ 13, 6, 4, 9, 8, 15, 3, 0, 11, 1, 2, 12, 5, 10, 14, 7 },
+	{ 1, 10, 13, 0, 6, 9, 8, 7, 4, 15, 14, 3, 11, 5, 2, 12 }
 };
  
-int S4[4][16] = {
-     7, 13, 14,  3,  0,  6,  9, 10,  1,  2,  8,  5, 11, 12,  4, 15,
-    13,  8, 11,  5,  6, 15,  0,  3,  4,  7,  2, 12,  1, 10, 14,  9,
-    10,  6,  9,  0, 12, 11,  7, 13, 15,  1,  3, 14,  5,  2,  8,  4,
-     3, 15,  0,  6, 10,  1, 13,  8,  9,  4,  5, 11, 12,  7,  2, 14
+static const unsigned short S4[4][16] = {
+    { 7, 13, 14, 3, 0, 6, 9, 10, 1, 2, 8, 5, 11, 12, 4, 15 },
+	{ 13, 8, 11, 5, 6, 15, 0, 3, 4, 7, 2, 12, 1, 10, 14, 9 },
+	{ 10, 6, 9, 0, 12, 11, 7, 13, 15, 1, 3, 14, 5, 2, 8, 4 },
+	{ 3, 15, 0, 6, 10, 1, 13, 8, 9, 4, 5, 11, 12, 7, 2, 14 }
 };
  
-int S5[4][16] = {
-     2, 12,  4,  1,  7, 10, 11,  6,  8,  5,  3, 15, 13,  0, 14,  9,
-    14, 11,  2, 12,  4,  7, 13,  1,  5,  0, 15, 10,  3,  9,  8,  6,
-     4,  2,  1, 11, 10, 13,  7,  8, 15,  9, 12,  5,  6,  3,  0, 14,
-    11,  8, 12,  7,  1, 14,  2, 13,  6, 15,  0,  9, 10,  4,  5,  3
+static const unsigned short S5[4][16] = {
+    { 2, 12, 4, 1, 7, 10, 11, 6, 8, 5, 3, 15, 13, 0, 14, 9 },
+	{ 14, 11, 2, 12, 4, 7, 13, 1, 5, 0, 15, 10, 3, 9, 8, 6 },
+	{ 4, 2, 1, 11, 10, 13, 7, 8, 15, 9, 12, 5, 6, 3, 0, 14 },
+	{ 11, 8, 12, 7, 1, 14, 2, 13, 6, 15, 0, 9, 10, 4, 5, 3 }
 };
  
-int S6[4][16] = {
-    12,  1, 10, 15,  9,  2,  6,  8,  0, 13,  3,  4, 14,  7,  5, 11,
-    10, 15,  4,  2,  7, 12,  9,  5,  6,  1, 13, 14,  0, 11,  3,  8,
-     9, 14, 15,  5,  2,  8, 12,  3,  7,  0,  4, 10,  1, 13, 11,  6,
-     4,  3,  2, 12,  9,  5, 15, 10, 11, 14,  1,  7,  6,  0,  8, 13
+static const unsigned short S6[4][16] = {
+    { 12, 1, 10, 15, 9, 2, 6, 8, 0, 13, 3, 4, 14, 7, 5, 11 },
+	{ 10, 15, 4, 2, 7, 12, 9, 5, 6, 1, 13, 14, 0, 11, 3, 8 },
+	{ 9, 14, 15, 5, 2, 8, 12, 3, 7, 0, 4, 10, 1, 13, 11, 6 },
+	{ 4, 3, 2, 12, 9, 5, 15, 10, 11, 14, 1, 7, 6, 0, 8, 13 }
 };
  
-int S7[4][16]= {
-     4, 11,  2, 14, 15,  0,  8, 13,  3, 12,  9,  7,  5, 10,  6,  1,
-    13,  0, 11,  7,  4,  9,  1, 10, 14,  3,  5, 12,  2, 15,  8,  6,
-     1,  4, 11, 13, 12,  3,  7, 14, 10, 15,  6,  8,  0,  5,  9,  2,
-     6, 11, 13,  8,  1,  4, 10,  7,  9,  5,  0, 15, 14,  2,  3, 12
+static const unsigned short S7[4][16]= {
+    { 4, 11, 2, 14, 15, 0, 8, 13, 3, 12, 9, 7, 5, 10, 6, 1 },
+	{ 13, 0, 11, 7, 4, 9, 1, 10, 14, 3, 5, 12, 2, 15, 8, 6 },
+	{ 1, 4, 11, 13, 12, 3, 7, 14, 10, 15, 6, 8, 0, 5, 9, 2 },
+	{ 6, 11, 13, 8, 1, 4, 10, 7, 9, 5, 0, 15, 14, 2, 3, 12 }
 };
  
-int S8[4][16]= {
-    13,  2,  8,  4,  6, 15, 11,  1, 10,  9,  3, 14,  5,  0, 12,  7,
-     1, 15, 13,  8, 10,  3,  7,  4, 12,  5,  6, 11,  0, 14,  9,  2,
-     7, 11,  4,  1,  9, 12, 14,  2,  0,  6, 10, 13, 15,  3,  5,  8,
-     2,  1, 14,  7,  4, 10,  8, 13, 15, 12,  9,  0,  3,  5,  6, 11
+static const unsigned short S8[4][16]= {
+		{ 13, 2, 8, 4, 6, 15, 11, 1, 10, 9, 3, 14, 5, 0, 12, 7 },
+		{ 1, 15, 13, 8, 10, 3, 7, 4, 12, 5, 6, 11, 0, 14, 9, 2 },
+		{ 7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8 },
+		{ 2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11 }
 };
+
+
+
+/******************************************************************************
+*******************************************************************************
+*******************************************************************************
+****************************FUNCIONES DES**************************************
+*******************************************************************************
+*******************************************************************************/
 
 FILE* out;
 int LEFT[17][32], RIGHT[17][32], IPtext[64], EXPtext[48], XORtext[48];
@@ -160,6 +169,7 @@ void expansion(int pos, int text){
 			EXPtext[i] = text;
 		}
 	}
+	return;
 }
 
 //Generates the inicial permutation
@@ -170,6 +180,8 @@ int initialPermutation(int pos, int text){
 			break;
 	}
 	IPtext[i] = text;
+
+	return 0;
 }
 
 //Function F
@@ -196,6 +208,7 @@ int F(int i){
 		return S7[r][c];
 	else if (i == 7)
 		return S8[r][c];
+	return 0;
 }
 
 //Function that calculates the XOR between too ints
@@ -219,6 +232,7 @@ int ToBits(int value){
 			X2[3 - j + i] = '1' - 48;
 	}
 	i = i + 4;
+	return 0;
 }
 
 //SBox code
@@ -235,6 +249,7 @@ int SBox(int XORtext[]){
 		value = F(i);
 		ToBits(value);
 	}
+	return 0;
 }
 
 // P permutation
@@ -245,6 +260,7 @@ int PBox(int pos, int text){
 			break;
 	}
 	R[i] = text;
+	return 0;
 }
 
 //Function that performs what a round needs to do
@@ -266,6 +282,8 @@ void cipher(int Round, int mode){
 		PBox(i, X2[i]);
 	for (i = 0; i < 32; i++)
 		RIGHT[Round][i] = XOR(LEFT[Round - 1][i], R[i]);
+	
+	return;
 }
 
 //Generates the final permutation using IP_INV and saves the output in ENCRYPTED
@@ -275,6 +293,7 @@ void finalPermutation(int pos, int text){
 		if (IP_INV[i] == pos + 1)
 			break;
 	ENCRYPTED[i] = text;
+	return;
 }
 
 //Conversion to Binary
@@ -288,12 +307,22 @@ void convertToBinary(int n){
 		else
 			fprintf(out, "1");
 	}
+	return;
 }
 
 //Reads a character and convert it to its bits representation, saving it to bits.txt
 int convertCharToBit(long int n){
 	FILE* inp = fopen("input.txt", "rb");
+	if(inp == NULL){
+        fprintf(stderr, "Error opening the input file in convertCharToBit\n");
+        return -1;
+    }
 	out = fopen("bits.txt", "wb+");
+	if(out == NULL){
+        fprintf(stderr, "Error opening the output file in convertCharToBit\n");
+		fclose(inp);
+        return -1;
+    }
 	char ch;
 	int i = n * 8;
 	while (i) {
@@ -305,12 +334,17 @@ int convertCharToBit(long int n){
 	}
 	fclose(out);
 	fclose(inp);
+	return 0;
 }
 
 //Perform the encryption doing the 16 rounds and writing the result on ENCRYPTED
 void Encryption(long int plain[]){
 	int i, j;
 	out = fopen("cipher.txt", "ab+");
+	if(out == NULL){
+        fprintf(stderr, "Error opening the cipher file in Encryption\n");
+        return;
+    }
 	for (i = 0; i < 64; i++)
 		initialPermutation(i, plain[i]);
 
@@ -337,12 +371,17 @@ void Encryption(long int plain[]){
 	for (i = 0; i < 64; i++)
 		fprintf(out, "%d", ENCRYPTED[i]);
 	fclose(out);
+	return;
 }
 
 //Performs the 16 rounds but in the reserver way as before 
 void Decryption(long int plain[]){
 	int i, j;
 	out = fopen("decrypted.txt", "ab+");
+	if(out == NULL){
+        fprintf(stderr, "Error opening the decrypted file in Decryption\n");
+        return;
+    }
 	for (i = 0; i < 64; i++)
 		initialPermutation(i, plain[i]);
 
@@ -370,6 +409,7 @@ void Decryption(long int plain[]){
 		fprintf(out, "%d", ENCRYPTED[i]);
 
 	fclose(out);
+	return;
 }
 
 //Converts from bit to a char...
@@ -378,14 +418,20 @@ void convertToBits(int ch[]){
 	for (i = 7; i >= 0; i--)
 		value += (int)pow(2, i) * ch[7 - i];
 	fprintf(out, "%c", value);
+	return;
 }
 
 //...and then writes it into a file "result", which will be the final result
-int bittochar(){
+int bitToChar(){
 	out = fopen("result.txt", "ab+");
+	if(out == NULL){
+        fprintf(stderr, "Error opening the output file in bitToChar\n");
+        return -1;
+    }
 	for (int i = 0; i < 64; i = i + 8)
 		convertToBits(&ENCRYPTED[i]);
 	fclose(out);
+	return 0;
 }
 
 //Decreases the key bits from 56 to 48 using the matrix PC2
@@ -395,6 +441,7 @@ void key56to48(int round, int pos, int text){
 		if (PC2[i] == pos + 1)
 			break;
 	key48bit[round][i] = text;
+	return;
 }
 
 //Decreases the key bits from 64 to 56 using the matrix PC1
@@ -404,6 +451,7 @@ int key64to56(int pos, int text){
 		if (PC1[i] == pos + 1)
 			break;
 	key56bit[i] = text;
+	return 0;
 }
 
 //Decreases the key bits from 64 to 48 (uses functions above), using Cn-Dn
@@ -431,7 +479,6 @@ void key64to48(unsigned int key[]){
 		k = 0;
 		for (int i = 28 - shift; i < 28; i++)
 			C[x][i] = backup[x - 1][k++];
-
 		for (i = 0; i < shift; i++)
 			backup[x - 1][i] = D[x - 1][i];
 		for (i = 0; i < (28 - shift); i++)
@@ -451,6 +498,31 @@ void key64to48(unsigned int key[]){
 	for (j = 1; j < 17; j++)
 		for (i = 0; i < 56; i++)
 			key56to48(j, i, CD[j][i]);
+	return;
+}
+
+//Performs the encryption reading from bits, where we have the character in bits
+void encrypt(long int n){
+	FILE* F_IN = fopen("bits.txt", "rb");
+	long int plain[n * 64];
+	int i = -1;
+	char ch;
+
+	if(F_IN == NULL){
+        fprintf(stderr, "Error opening the bits file in encrypt\n");
+        return;
+    }
+
+	while (!feof(F_IN)) {
+		ch = getc(F_IN);
+		plain[++i] = ch - 48;
+	}
+
+	for (int i = 0; i < n; i++)
+		Encryption(plain + 64 * i);
+
+	fclose(F_IN);
+	return;
 }
 
 //Performs the decryption reading from cipher.txt
@@ -460,6 +532,11 @@ void decrypt(long int n){
 	int i = -1;
 	char ch;
 
+	if(F_IN == NULL){
+        fprintf(stderr, "Error opening the cypher file in decrypt\n");
+        return;
+    }
+
 	while (!feof(F_IN)) {
 		ch = getc(F_IN);
 		plain[++i] = ch - 48;
@@ -467,14 +544,145 @@ void decrypt(long int n){
 	
 	for (i = 0; i < n; i++) {
 		Decryption(plain + i * 64);
-		bittochar();
+		bitToChar();
 	}
 	fclose(F_IN);
+	return;
 }
 
-//Performs the encryption reading from bits, where we have the character in bits
-void encrypt(long int n){
-	FILE* F_IN = fopen("bits.txt", "rb");
+//Function that creates the 16 subkeys
+void create16Keys(){
+	FILE* F_OUT = fopen("key.txt", "rb");
+	unsigned int key[64];
+	int i = 0, ch;
+	if(F_OUT == NULL){
+        fprintf(stderr, "Error opening the key file in create16Keys\n");
+        return;
+    }
+	while (!feof(F_OUT)) {
+		ch = getc(F_OUT);
+		key[i++] = ch - 48;
+	}
+
+	key64to48(key);
+	fclose(F_OUT);
+	return;
+}
+
+//Finds the size of a file 
+long int findFileSize(){
+	FILE* input2 = fopen("input.txt", "rb");
+	if(input2 == NULL){
+        fprintf(stderr, "Error opening the input file in decrypt\n");
+        return -1;
+    }
+	long int size;
+	if (fseek(input2, 0L, SEEK_END))
+		perror("fseek() failed");
+	else // size will contain no. of chars in input file.
+		size = ftell(input2);
+	fclose(input2);
+
+	return size;
+}
+
+/******************************************************************************
+*******************************************************************************
+*******************************************************************************
+***********************FUNCIONES TRIPLE DES************************************
+*******************************************************************************
+*******************************************************************************/
+
+//Perform the encryption doing the 16 rounds and writing the result on ENCRYPTED, but this time saves it in temporal2 
+void EncryptionTRIPLEDES(long int plain[]){
+	int i, j;
+	out = fopen("temporal2.txt", "ab+");
+	if(out == NULL){
+        fprintf(stderr, "Error opening the cipher file in Encryption\n");
+        return;
+    }
+	for (i = 0; i < 64; i++)
+		initialPermutation(i, plain[i]);
+
+	for (i = 0; i < 32; i++)
+		LEFT[0][i] = IPtext[i];
+	for (i = 32; i < 64; i++)
+		RIGHT[0][i - 32] = IPtext[i];
+
+	for (j = 1; j < 17; j++) {
+		cipher(j, 0);
+		for (i = 0; i < 32; i++)
+			LEFT[j][i] = RIGHT[j - 1][i];
+	}
+
+	for (i = 0; i < 64; i++) {
+		if (i < 32)
+			CIPHER[i] = RIGHT[16][i];
+		else
+			CIPHER[i] = LEFT[16][i - 32];
+		finalPermutation(i, CIPHER[i]);
+	}
+
+	for (i = 0; i < 64; i++)
+		fprintf(out, "%d", ENCRYPTED[i]);
+	fclose(out);
+	return;
+}
+
+//Performs the 16 rounds but in the reverse way as before, but this time saves it in temporal1
+void DecryptionTRIPLEDES(long int plain[]){
+	int i, j;
+	out = fopen("temporal1.txt", "ab+");
+	if(out == NULL){
+        fprintf(stderr, "Error opening the decrypted file in Decryption\n");
+        return;
+    }
+	for (i = 0; i < 64; i++)
+		initialPermutation(i, plain[i]);
+
+	for (i = 0; i < 32; i++)
+		LEFT[0][i] = IPtext[i];
+
+	for (i = 32; i < 64; i++)
+		RIGHT[0][i - 32] = IPtext[i];
+
+	for (j = 1; j < 17; j++) {
+		cipher(j, 1);
+
+		for (i = 0; i < 32; i++)
+			LEFT[j][i] = RIGHT[j - 1][i];
+	}
+	for (i = 0; i < 64; i++) 
+	{
+		if (i < 32)
+			CIPHER[i] = RIGHT[16][i];
+		else
+			CIPHER[i] = LEFT[16][i - 32];
+		finalPermutation(i, CIPHER[i]);
+	}
+	for (i = 0; i < 64; i++)
+		fprintf(out, "%d", ENCRYPTED[i]);
+
+	fclose(out);
+	return;
+}
+
+//Performs the encryption reading from temporal2, where we have the character in bits
+void encryptTRIPLEDES(long int n, char *string){
+	
+	//Destroy contents from possible previous runs
+	FILE* out = fopen("temporal2.txt", "wb+");
+	if(out == NULL){
+        fprintf(stderr, "Error opening second file in encrypt triple DES\n");
+        return;
+    }
+	fclose(out);
+
+	FILE* F_IN = fopen(string, "rb");
+	if(F_IN == NULL){
+        fprintf(stderr, "Error opening the file from arguments in encryptTRIPLEDES\n");
+        return;
+    }
 
 	long int plain[n * 64];
 	int i = -1;
@@ -486,36 +694,96 @@ void encrypt(long int n){
 	}
 
 	for (int i = 0; i < n; i++)
-		Encryption(plain + 64 * i);
+		EncryptionTRIPLEDES(plain + 64 * i);
 
 	fclose(F_IN);
+	return;
 }
 
-//Function that creates the 16 subkeys
-void create16Keys(){
-	FILE* F_OUT = fopen("key.txt", "rb");
-	unsigned int key[64];
+//Performs the decryption reading from temporal1 this time
+void decryptTRIPLEDES(long int n, char* string){
+	
+	//Destroy contents from possible previous runs
+	FILE* out = fopen("temporal1.txt", "wb+");
+	if(out == NULL){
+        fprintf(stderr, "Error opening first file in decrypt triple DES\n");
+        return;
+    }
+	fclose(out);
+	
+	out = fopen("result.txt", "wb+");
+	if(out == NULL){
+        fprintf(stderr, "Error opening result file in decrypt triple DES\n");
+        return;
+    }
+	fclose(out);
+
+	FILE* F_IN = fopen(string, "rb");
+	long int plain[n * 64];
+	int i = -1;
+	char ch;
+
+	if(F_IN == NULL){
+        fprintf(stderr, "Error opening the file from arguments in decryptTRIPLEDES\n");
+        return;
+    }
+
+	while (!feof(F_IN)) {
+		ch = getc(F_IN);
+		plain[++i] = ch - 48;
+	}
+	
+	for (i = 0; i < n; i++) {
+		DecryptionTRIPLEDES(plain + i * 64);
+		bitToChar();
+	}
+	fclose(F_IN);
+	return;
+}
+
+//Function that create the 16 subkeys, but it reads the file where we have created a 192 bits key 
+void create16KeysTRIPLEDES(unsigned int key[]){
+	FILE* output = fopen("keyTRIPLE.txt", "rb");
 	int i = 0, ch;
 
-	while (!feof(F_OUT)) {
-		ch = getc(F_OUT);
+	if(output == NULL){
+        fprintf(stderr, "Error opening the key file in create16Keys\n");
+        return;
+    }
+
+	while (!feof(output)) {
+		ch = getc(output);
 		key[i++] = ch - 48;
 	}
 
-	key64to48(key);
-	fclose(F_OUT);
+
+	fclose(output);
+	return;
 }
 
-//Finds the size of a file 
-long int findFileSize(){
-	FILE* input2 = fopen("input.txt", "rb");
-	long int size;
-	if (fseek(input2, 0L, SEEK_END))
-		perror("fseek() failed");
-	else // size will contain no. of chars in input file.
-		size = ftell(input2);
-	fclose(input2);
-
-	return size;
+//Reads a character and convert it to its bits representation, saving it to temporal1.txt
+int convertCharToBitTRIPLEDES(long int n){
+	FILE* inp = fopen("input.txt", "rb");
+	if(inp == NULL){
+        fprintf(stderr, "Error opening the input file in convertCharToBit\n");
+        return -1;
+    }
+	out = fopen("temporal1.txt", "wb+");
+	if(out == NULL){
+        fprintf(stderr, "Error opening the first file in convertCharToBit\n");
+		fclose(inp);
+        return -1;
+    }
+	char ch;
+	int i = n * 8;
+	while (i) {
+		ch = fgetc(inp);
+		if (ch == -1)
+			break;
+		i--;
+		convertToBinary(ch);
+	}
+	fclose(out);
+	fclose(inp);
+	return 0;
 }
-

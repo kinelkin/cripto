@@ -16,9 +16,10 @@
 #define BITS_IN_E 48
 #define BITS_IN_P 32
 
-void expansion_function(int pos, int text);
+//DES
+void expansion(int pos, int text);
 int initialPermutation(int pos, int text);
-int F1(int i);
+int F(int i);
 int XOR(int a, int b);
 int ToBits(int value);
 int SBox(int XORtext[]);
@@ -30,13 +31,21 @@ int convertCharToBit(long int n);
 void Encryption(long int plain[]);
 void Decryption(long int plain[]);
 void convertToBits(int ch[]);
-int bittochar();
+int bitToChar();
 void key56to48(int round, int pos, int text);
 int key64to56(int pos, int text);
 void key64to48(unsigned int key[]);
-void decrypt(long int n);
 void encrypt(long int n);
+void decrypt(long int n);
 void create16Keys();
 long int findFileSize();
+
+//TRIPLE DES
+void create16KeysTRIPLEDES();
+void encryptTRIPLEDES(long int n, char* string);
+void decryptTRIPLEDES(long int n, char* string);
+void EncryptionTRIPLEDES(long int plain[]);
+void DecryptionTRIPLEDES(long int plain[]);
+int convertCharToBitTRIPLEDES(long int n);
 
 #endif
