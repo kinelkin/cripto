@@ -8,7 +8,7 @@
 
 
 int main(int argc, char *argv[]){
-    
+
     FILE* file_in = NULL, *out = NULL;
     unsigned char *iv;
     int length;
@@ -20,8 +20,8 @@ int main(int argc, char *argv[]){
     }
 
     /*iv = (unsigned char *)argv[2];
-    
-	length = strlen((char *)iv); 
+
+	length = strlen((char *)iv);
 
     if(length > 64){
         printf("IV too long, it should be 64 characters long");
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
         file_size += 1;
     }
     fclose(file_in);
-    
+
     // destroy contents of these files (from previous runs, if any)
     out = fopen("cipher.txt", "wb+");
 	fclose(out);
@@ -57,6 +57,6 @@ int main(int argc, char *argv[]){
         printf("Error, type e for encryption or d for decryption\n");
     }
 
-    
+
 	return 0;
 }

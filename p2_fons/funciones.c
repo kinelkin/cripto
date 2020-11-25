@@ -118,6 +118,26 @@ void analyse_prob_cond(FILE *F_OUT, char *original, char *cypher, long len){
     free(all_freqs[i]);
   free(all_freqs);
 }
+/******************************************************************************
+*******************************************************************************
+*******************************************************************************
+****************************Apartado 3*****************************************
+*******************************************************************************
+*******************************************************************************/
+int get_col_des(int a){
+  int aux;
+  aux = a << DES_COL_SHIFT;
+  aux = aux >> 2;
+  return aux;
+}
+
+int get_row_des(int a){
+  int aux1, aux2;
+  aux1 = a >> DES_ROW_SHIFT;
+  aux1 = aux1 << 1;
+  aux2 = (a << DES_ROW_SHIFT) >> DES_ROW_SHIFT;
+  return (aux1^aux2);
+}
 
 /******************************************************************************
 *******************************************************************************
@@ -126,13 +146,13 @@ void analyse_prob_cond(FILE *F_OUT, char *original, char *cypher, long len){
 *******************************************************************************
 *******************************************************************************/
 int get_col(int a){
-  int aux;
+  unsigned char aux;
   aux = a >> SHIFT;
   return aux;
 }
 
 int get_row(int a){
-  int aux;
+  unsigned char aux;
   aux = a << SHIFT;
   aux = aux >> SHIFT;
   return aux;
@@ -205,14 +225,103 @@ void bin_div(int n, int d, int *res, int *rem){
 
 
 int euclides_aes(int r0, int r1){
-  int mcd, q, rem;
+  int q, rem;
 
   while(rem != 0){
-    bin_div(r0, r1, q, rem);
+    bin_div(r0, r1, &q, &rem);
     r0 = r1;
     r1 = rem;
   }
   return r0;
+}
+
+unsigned char xtime(unsigned char a){
+  if((a & AES_80) != AES_80)
+    return a << 1;
+  else
+    return (a << 1)^XTIME_CTE;
+}
+
+int aes_mult(int a, int b){
+  unsigned char bit, res, i, j, aux;
+  bit = 1;
+  res = 0;
+  aux = 0;
+  for(i=0; i<BYTESIZE; i++){
+    if( (bit & b) == bit){
+      aux = (unsigned char)a;
+      for(j = 0; j<i; j++){
+        aux = xtime(aux);
+      }
+
+      res = res^aux;
+      aux = 0;
+    }
+    bit = bit << 1;
+  }
+  return res;
+}
+
+void euclides_ext_aes(int a, int b, int *mcd, int *inv){
+  int r0, r1, t0, t1, q, aux;
+  if(b == 0){
+    *mcd = a;
+    *inv = 0;
+    return;
+  }
+
+  r0 = a;
+  r1 = b;
+  t0 = 0;
+  t1 = 1;
+  // s0 = 1;
+  // s1 = 0;
+  q = 0;
+  while(r1 != 0){
+    // printf("\nBEFORE DIV R1 == %x\nR0 = %x\nq = %x\nt0 = %x", r1, r0, q, t0);
+    // printf("\nBefore Div: T0 = %x, T1 = %x, q = %x, q*t1 = %x", t0, t1, q, q*t1);
+    aux = r1;
+    bin_div(r0, r1, &q, &r1);
+    // printf("\nAFTER DIV q == %x", q);
+    // q = r0/r1;
+    // aux = r1;
+    // r1 = r0 - q*r1;
+    r0 = aux;
+    // aux = s1;
+    // s1 = s0 - (q*s1);
+    // s1 = s0^(q*s1);
+    // s0 = aux;
+    aux = t1;
+    // t1 = t0 - q*t1;
+    t1 = t0^(aes_mult(q,t1));
+    t0 = aux;
+    // printf("\nAfter Div: T0 = %x, T1 = %x, q = %x, q*t1 = %x", t0, t1, q, q*t1);
+    // printf("\nAFTER DIV R1 == %x\nR0 = %x\nq = %x\nt0 = %x\n", r1, r0, q, t0);
+
+  }
+  /*In case the inv >= 11b we need the inverse mod 11b*/
+  if(a <= t0)
+    bin_div(t0, a, &aux, &t0);
+  *mcd = r0;
+  *inv = t0;
+  // printf("\nS == %x", s0);
+  // bin_div((int)strtol("11b", NULL, 16), s0, &t0, &t1);
+  // printf("\nS == %x", t1);
+}
+
+unsigned char invert_byte(unsigned char b){
+  int i, bit, i_bit;
+  unsigned char inv;
+  bit = 1;
+  i_bit = 128;
+  inv = 0;
+  for(i = 0; i < BYTESIZE; i++){
+    if((bit & b) == bit)
+      inv  += i_bit;
+    bit = bit << 1;
+    i_bit = i_bit >> 1;
+  }
+  return inv;
 }
 
 

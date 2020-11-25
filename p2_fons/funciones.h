@@ -17,13 +17,22 @@
 #define ALFABET_LEN 26
 #define ADDITION 10
 
+#define DES_ROW_SHIFT 5
+#define DES_COL_SHIFT 1
+
 #define SHIFT 4
 #define MODE_C 'C'
 #define MODE_D 'D'
 
-/* 1 0000 0000  = '80' for aes division */
+/* 1 0000 0000  = '100' for aes division */
 #define BASE_INT 256
+#define BYTESIZE 8
 #define BITS_IN_BYTE 9
+#define MAX_BYTE 255
+/* 0001 1011 = '1B' for aes multiplication*/
+#define XTIME_CTE 27
+#define AES_80 128
+#define M_X "11b"
 
 
 /******************************************************************************
@@ -140,8 +149,38 @@ OUT:    char *var   --  char * with all the chars from the file
 char *file_to_var(FILE *F_IN, int punct, long *len);
 
 
+/******************************************************************************
+*******************************************************************************
+Function
+Name:   get_col_des
+IN:     int a -- number to get sbox col from
+OUT:    int -- number obtained
+DESC:   shifts a 1 bit to the left
+        then shifts it 2 bits to the right (obtains a2 a3 a4 a5)
+        a = a1 a2 a3 a4 a5 a6 = 101011
+        aux = 010110 (a2 a3 a4 a5 a6 0)
+        aux = 000101 (0 0 a2 a3 a4 a5)
+*******************************************************************************
+*******************************************************************************/
+int get_col_des(int a);
 
-
+/******************************************************************************
+*******************************************************************************
+Function
+Name:   get_row_des
+IN:     int a -- number to get sbox row from
+OUT:    int -- number obtained
+DESC:   shifts a 5 bits to the right to obtain the msb
+        stores this in aux1 and shifts one to the left
+        shifts a 5 bits to the left and then to the right to obtain lsb
+        XORs both results (obtains a1 a6)
+        a = a1 a2 a3 a4 a5 a6 = 101011
+        aux1 = 000001 (00000a1) --> 000010 (0000a10)
+        aux2 = 000001 (00000a6)
+        aux1 XOR aux2 = 000011 (0000a1a6)
+*******************************************************************************
+*******************************************************************************/
+int get_row_des(int a);
 
 
 
@@ -226,16 +265,43 @@ int euclides_aes(int r0, int r1);
 /******************************************************************************
 *******************************************************************************
 Function
-Name:   euclides_ext_aes
-IN:     int r0 -- larger number to divide
-        int r1 -- smaller number divisor
-OUT:    int -- mcd of r0 and r1 in AES (Z2[x]/<m(x)>), m(x) = '11B'
-DESC:   calculates the mcd of two polinomials r0 and r1 in Z2[x]/<m(x)>)
-        using Euclides' Algorithm
-        r0 = q1*r1 + r2
-        r1 = q2*r2 + r3
-        ...
-        r_(n-1) = q_n*r_n + 0
+Name:   aes_mult
+IN:     int a -- number to mult
+        int b -- number to mult
+OUT:    aes multiplication of a*b
+DESC:   uses xtime function to multiply two numbers in aes
 *******************************************************************************
 *******************************************************************************/
-int euclides_ext_aes(int r0, int r1);
+int aes_mult(int a, int b);
+
+/******************************************************************************
+*******************************************************************************
+Function
+Name:   euclides_ext_aes
+IN:     int a -- larger number to divide
+        int b -- smaller number divisor
+        int *mcd -- int to store mcd
+        int *inv -- int to store the inverse
+OUT:    void (stores variablesin mcd and inv)
+DESC:   calculates the mcd of two polinomials r0 and r1 in Z2[x]/<m(x)>)
+        and the inverse of r1
+        using Euclides' extended Algorithm
+        r0 = q1*r1 + r2 --> r2 = r0 - q1*r1
+        r1 = q2*r2 + r3 --> r3 = r1 - q2*r2
+        ...
+        r_(n-1) = q_n*r_n + 0
+        For the division it uses the above function 'bin_div'
+*******************************************************************************
+*******************************************************************************/
+void euclides_ext_aes(int a, int b, int *mcd, int *inv);
+
+/******************************************************************************
+*******************************************************************************
+Function
+Name:   invert_byte
+IN:     unsigned char b -- byte to invert
+OUT:    inverted byte
+DESC:   EG: 0010 1101 --> 1011 0100
+*******************************************************************************
+*******************************************************************************/
+unsigned char invert_byte(unsigned char b);

@@ -46,4 +46,10 @@ void decryptTRIPLEDES(long int n, char* string);
 void EncryptionTRIPLEDES(long int plain[]);
 void DecryptionTRIPLEDES(long int plain[]);
 int convertCharToBitTRIPLEDES(long int n, char* filename);
+
+//AVALANCHE
+void av_mode_on();
+long long *get_des_hist();
+int get_av_mode();
+long long array_to_long(int array[], int len);
 #endif
