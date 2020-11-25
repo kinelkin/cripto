@@ -307,8 +307,8 @@ void convertToBinary(int n){
 }
 
 //Reads a character and convert it to its bits representation, saving it to bits.txt
-int convertCharToBit(long int n){
-	FILE* inp = fopen("input.txt", "rb");
+int convertCharToBit(long int n, char* filename){
+	FILE* inp = fopen(filename, "rb");
 	if(inp == NULL){
         fprintf(stderr, "Error opening the input file in convertCharToBit\n");
         return -1;
@@ -566,8 +566,8 @@ void create16Keys(){
 }
 
 //Finds the size of a file 
-long int findFileSize(){
-	FILE* input2 = fopen("input.txt", "rb");
+long int findFileSize(char* filename){
+	FILE* input2 = fopen(filename, "rb");
 	if(input2 == NULL){
         fprintf(stderr, "Error opening the input file in decrypt\n");
         return -1;
@@ -758,8 +758,8 @@ void create16KeysTRIPLEDES(unsigned int key[]){
 }
 
 //Reads a character and convert it to its bits representation, saving it to temporal1.txt
-int convertCharToBitTRIPLEDES(long int n){
-	FILE* inp = fopen("input.txt", "rb");
+int convertCharToBitTRIPLEDES(long int n, char* filename){
+	FILE* inp = fopen(filename, "rb");
 	if(inp == NULL){
         fprintf(stderr, "Error opening the input file in convertCharToBit\n");
         return -1;

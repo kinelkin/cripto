@@ -26,7 +26,7 @@ int PBox(int pos, int text);
 void cipher(int Round, int mode);
 void finalPermutation(int pos, int text);
 void convertToBinary(int n);
-int convertCharToBit(long int n);
+int convertCharToBit(long int n, char* filename);
 void Encryption(long int plain[]);
 void Decryption(long int plain[]);
 void convertToBits(int ch[]);
@@ -37,7 +37,7 @@ void key64to48(unsigned int key[]);
 void encrypt(long int n);
 void decrypt(long int n);
 void create16Keys();
-long int findFileSize();
+long int findFileSize(char* filename);
 
 //TRIPLE DES
 void create16KeysTRIPLEDES();
@@ -45,6 +45,6 @@ void encryptTRIPLEDES(long int n, char* string);
 void decryptTRIPLEDES(long int n, char* string);
 void EncryptionTRIPLEDES(long int plain[]);
 void DecryptionTRIPLEDES(long int plain[]);
-int convertCharToBitTRIPLEDES(long int n);
+int convertCharToBitTRIPLEDES(long int n, char* filename);
 
 #endif

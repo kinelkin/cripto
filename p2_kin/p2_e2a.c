@@ -32,7 +32,7 @@ int main(int argc, char *argv[]){
 		printf("Error reading file from args \n");
 		return -1;
 	}
-    file_size = findFileSize();
+    file_size = findFileSize(argv[2]);
     while(file_size % 8 != 0){
         fprintf(file_in,"%c",(rand()%36)+65);
         file_size += 1;
@@ -49,8 +49,8 @@ int main(int argc, char *argv[]){
 
     if(strcmp(argv[1],"e") || strcmp (argv[1],"d")){
         create16Keys();
-	    n = findFileSize() / 8;
-	    convertCharToBit(n);
+	    n = file_size / 8;
+	    convertCharToBit(n, argv[2]);
 	    encrypt(n);
         decrypt(n);
     }else{

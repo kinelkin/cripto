@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
 		printf("Error reading file from args \n");
 		return -1;
 	}
-    file_size = findFileSize();
+    file_size = findFileSize(argv[2]);
     while(file_size % 8 != 0){
         fprintf(file_in,"%c",(rand()%36)+65);
         file_size += 1;
@@ -24,8 +24,8 @@ int main(int argc, char *argv[]){
     if(strcmp(argv[1],"e") || strcmp (argv[1],"d")){
 
         create16KeysTRIPLEDES(key);
-        n = findFileSize() / 8;
-        convertCharToBitTRIPLEDES(n);
+        n = file_size / 8;
+        convertCharToBitTRIPLEDES(n, argv[2]);
 
         // We will encrypt with K1, decrypt with K2, then encrypt with K3
         key64to48(key);
