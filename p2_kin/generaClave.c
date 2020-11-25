@@ -1,8 +1,3 @@
-#include <time.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
 #include "DES.h"
 
 
@@ -10,20 +5,20 @@ int main(){
 
     FILE* output = fopen("key.txt","w");
     unsigned char key[65];
-    int i, flag_paridad = 0;
+    int i, parity_flag = 0;
 
     for (i=0; i<64; i++) {
         if(i % 8 == 7){
-            if(flag_paridad%2){
+            if(parity_flag%2){
                 key[i] = '0';
             }else{
                 key[i] = '1';
             }
-            flag_paridad=0;
+            parity_flag=0;
         }else{
             if(rand()%2){
                 key[i] = '1';
-                flag_paridad+=1;
+                parity_flag+=1;
             }else{
                 key[i] = '0';
             } 
@@ -32,7 +27,7 @@ int main(){
 
     key[64] = '\0';
 
-    printf("Hemos generado una clave para ti: \n");
+    printf("There is a key for you: \n");
     printf("%s \n", key);
 
 

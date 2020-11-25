@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <math.h>
-#include <time.h>
+#include "DES.h"
 
 #define BITS_IN_PC1 56
 #define BITS_IN_PC2 48

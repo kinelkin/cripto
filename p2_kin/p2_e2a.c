@@ -11,8 +11,8 @@ int main(int argc, char *argv[]){
     
     FILE* file_in = NULL, *out = NULL;
     unsigned char *iv;
-    int length, file_size;
-    long int n;
+    int length;
+    long int n, file_size;
 
     if(argc < 3) {
         printf("Args error, it should be like: <iv> <f_in>");
@@ -28,20 +28,17 @@ int main(int argc, char *argv[]){
         return -1;
     }*/
 
-    if((file_in = fopen(argv[2], "rb")) == -1){
+    if((file_in = fopen(argv[2], "a")) == -1){
 		printf("Error reading file from args \n");
 		return -1;
 	}
     file_size = findFileSize();
-    while(file_size % 64 != 0){
-            printf("hola");
-            fprintf(file_in,"%c",(rand()%36)+64);
-            printf("adios");
-            file_size += 8;
+    while(file_size % 8 != 0){
+        fprintf(file_in,"%c",(rand()%36)+65);
+        file_size += 1;
     }
     fclose(file_in);
     
-
     // destroy contents of these files (from previous runs, if any)
     out = fopen("cipher.txt", "wb+");
 	fclose(out);

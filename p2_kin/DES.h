@@ -8,7 +8,6 @@
 #include <math.h>
 #include <time.h>
 
-#define FIRSTBIT 0x8000000000000000
 #define BITS_IN_PC1 56
 #define BITS_IN_PC2 48
 #define ROUNDS 16

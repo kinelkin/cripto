@@ -3,33 +3,37 @@
 int main(int argc, char *argv[]){
     FILE* file_in = NULL;
     unsigned int key[192];
+    long int n, file_size;
 
     if(argc < 3) {
         printf("Args error, it should be like: <program> <option> <iv> <f_in>");
         return -1;
     }
 
-    if((file_in = fopen(argv[2], "rb")) == -1){
+    if((file_in = fopen(argv[2], "a")) == -1){
 		printf("Error reading file from args \n");
 		return -1;
 	}
+    file_size = findFileSize();
+    while(file_size % 8 != 0){
+        fprintf(file_in,"%c",(rand()%36)+65);
+        file_size += 1;
+    }
     fclose(file_in);
     
     if(strcmp(argv[1],"e") || strcmp (argv[1],"d")){
 
         create16KeysTRIPLEDES(key);
-        long int n = findFileSize() / 8;
+        n = findFileSize() / 8;
         convertCharToBitTRIPLEDES(n);
 
         // We will encrypt with K1, decrypt with K2, then encrypt with K3
         key64to48(key);
         // convert temporal1 to temporal2 using K1
         encryptTRIPLEDES(n, "temporal1.txt");	
-
         key64to48(key + 64);
         // convert temporal2 to temporal1 using K2
         decryptTRIPLEDES(n, "temporal2.txt");	
-
         key64to48(key + 128);
         // convert temporal1 to temporal2 using K3
         encryptTRIPLEDES(n, "temporal1.txt");	
