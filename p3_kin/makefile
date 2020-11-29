@@ -9,10 +9,10 @@ funciones.o: funciones.c funciones.h
 
 # e2a
 potencia: p3_ej2a.o
-	$(CC) $(CFLAGS) -o potencia p3_ej2a.o funciones.o
+	$(CC) $(CFLAGS) -o potencia p3_ej2a.o funciones.o -lgmp
 
 p3_ej2a.o: p3_ej2a.c funciones.o
-	$(CC) $(CFLAGS) -c p3_ej2a.c
+	$(CC) $(CFLAGS) -c p3_ej2a.c 
 
 
 

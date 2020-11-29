@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <errno.h>
+#include <gmp.h>
 
 #define MAX_DIGITS 256
 
