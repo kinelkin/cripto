@@ -12,7 +12,7 @@ void ClearInputBuffer() {
 	while ((c = getchar()) != '\n' && c != EOF);
 }
 
-void getIntegerFromStdin(long *inputInteger) {
+void getIntegerFromStdin(long long *inputInteger) {
 	char *inputBuffer = malloc(sizeof(char) * MAX_DIGITS);
 	memset(inputBuffer, 0, MAX_DIGITS);
 	char *input = NULL;
@@ -40,8 +40,8 @@ void getIntegerFromStdin(long *inputInteger) {
 	free(inputBuffer);
 }
 
-long modularExponentiation(long base, long exponent, long module){
-	long result = 1;
+long modularExponentiation(long long base, long long exponent, long long module){
+	long long result = 1;
 	
     if (1 & exponent)
 		result = base;

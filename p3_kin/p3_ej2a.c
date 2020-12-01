@@ -1,7 +1,7 @@
 #include "funciones.h"
 
 int main(){
-    long base = 0, exponent = 0, mod = 0;
+    long long base = 0, exponent = 0, mod = 0;
 	mpz_t base_gmp, exponent_gmp, mod_gmp, result_gmp;
 
 	printf("This program called Potencia computes base to the power exponent module m\n");
@@ -11,7 +11,7 @@ int main(){
 	getIntegerFromStdin(&exponent);
 	puts("Enter module:");
 	getIntegerFromStdin(&mod);
-	printf("%ld to the power %ld ≡ %ld (mod%ld)\n", base, exponent, modularExponentiation(base, exponent, mod), mod);
+	printf("%lld to the power %lld ≡ %ld (mod%lld)\n", base, exponent, modularExponentiation(base, exponent, mod), mod);
 
 	mpz_init(base_gmp);
 	mpz_init(exponent_gmp);

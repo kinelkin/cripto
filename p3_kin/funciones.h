@@ -9,10 +9,10 @@
 #include <errno.h>
 #include <gmp.h>
 
-#define MAX_DIGITS 256
+#define MAX_DIGITS 4096
 
 void ClearInputBuffer();
-void getIntegerFromStdin(long *inputInteger);
-long modularExponentiation(long base, long exponent, long module);
+void getIntegerFromStdin(long long*inputInteger);
+long modularExponentiation(long long base, long long exponent, long long module);
 
 #endif
