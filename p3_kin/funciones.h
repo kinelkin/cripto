@@ -13,6 +13,7 @@
 
 void ClearInputBuffer();
 void getIntegerFromStdin(long long*inputInteger);
-long modularExponentiation(long long base, long long exponent, long long module);
+long long modularExponentiation(long long base, long long exponent, long long module);
+long long mulmod(long long a, long long b, long long mod);
 
 #endif

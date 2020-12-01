@@ -11,7 +11,7 @@ int main(){
 	getIntegerFromStdin(&exponent);
 	puts("Enter module:");
 	getIntegerFromStdin(&mod);
-	printf("%lld to the power %lld ≡ %ld (mod%lld)\n", base, exponent, modularExponentiation(base, exponent, mod), mod);
+	printf("%lld to the power %lld ≡ %lld (mod%lld)\n", base, exponent, modularExponentiation(base, exponent, mod), mod);
 
 	mpz_init(base_gmp);
 	mpz_init(exponent_gmp);

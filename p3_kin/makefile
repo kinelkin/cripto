@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-g -Wall -pedantic
-EXS= potencia
+EXS= potencia miller
 
 all: $(EXS)
 
@@ -14,6 +14,11 @@ potencia: p3_ej2a.o
 p3_ej2a.o: p3_ej2a.c funciones.o
 	$(CC) $(CFLAGS) -c p3_ej2a.c 
 
+miller: p3_ej2b.o
+	$(CC) $(CFLAGS) -o miller p3_ej2b.o funciones.o -lgmp
+
+p3_ej2b.o: p3_ej2b.c funciones.o
+	$(CC) $(CFLAGS) -c p3_ej2b.c 
 
 
 clean:
