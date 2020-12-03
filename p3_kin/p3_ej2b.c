@@ -26,11 +26,11 @@ int main(){
 
     printf("Here is the comprobation using GMP\n");
     if(isPrimeGMP == 0){
-        printf("\n%lld is definitely not prime\n", testing);
+        gmp_printf("\n%Zd is definitely not prime\n", test);
     }else if(isPrimeGMP == 1){
-        printf("\n%lld is probably prime\n", testing);
+        gmp_printf("\n%Zd is probably prime\n", test);
     }else{
-        printf("\n%lld is definitely prime\n", testing);
+        gmp_printf("\n%Zd is definitely prime\n", test);
     }
     
     mpz_clear(test);
