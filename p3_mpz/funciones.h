@@ -12,6 +12,6 @@
 #define MAX_DIGITS 4096
 
 void modularExponentiation(mpz_t result, mpz_t base, mpz_t exponent, mpz_t module);
-void mulmod(mpz_t result, mpz_t a, mpz_t b, mpz_t mod);
+
 
 #endif

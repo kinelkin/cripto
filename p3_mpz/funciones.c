@@ -7,56 +7,46 @@
 *******************************************************************************
 *******************************************************************************/
 
-
-void mulMod(mpz_t result, mpz_t a, mpz_t b, mpz_t mod){
-    mpz_t x;
-	mpz_t y;
-	mpz_t two;
-	mpz_set_ui(two,2);
-	mpz_mod(y,a,mod);
-    
-	while (mpz_cmp_ui(b,0)){
-		mpz_mod(b,b,two);
-        if (mpz_cmp_ui(b,1)){    
-			mpz_add(x,x,y);
-			mpz_mod(x,x,mod);
-        }
-		mpz_mul(y,y,two);
-		mpz_mod(y,y,mod);
-		mpz_div(b,b,two);
-    }
-	mpz_mod(x,x,mod);
-	mpz_set(result,x);
-
-}
-
 void modularExponentiation(mpz_t result, mpz_t base, mpz_t exponent, mpz_t module){
-	mpz_t result_mulmod;
+	mpz_t zero;
 	mpz_t one;
 	mpz_t two;
-	mpz_t condition;
-	mpz_init(result_mulmod);
-	mpz_init(condition);
+	mpz_t exponent_comprobation, base_aux, exponent_aux;
+	mpz_init_set_ui(zero,0);
 	mpz_init_set_ui(one,1);
-	mpz_init_set_ui(two,2);
-	mpz_set_ui(result,1);
-    mpz_and(condition, exponent, one);
-	if (mpz_cmp_ui(exponent,0))
-		 mpz_set(result,base);
-
-	while (1) {
-		if (mpz_cmp_ui(exponent,0)) break;
-		mpz_div(exponent, exponent, two);
-		mulMod(result_mulmod,base,base,module);
-		mpz_set(base,result_mulmod);
-		mpz_and(condition,exponent,one);
-		if (mpz_cmp_ui(condition,0)){
-			mulMod(result_mulmod,result,base,module);
-			mpz_set(result,result_mulmod);
-		}
-
+	
+	if (mpz_cmp_ui(module,1) == 0){
+		mpz_set(result,zero);
+		mpz_clear(zero);
+		mpz_clear(one);
+		return;
 	}
+	mpz_init_set(base_aux,base);
+	mpz_init_set(exponent_aux, exponent);
+	mpz_init(exponent_comprobation);
+	mpz_init_set_ui(two,2);
+	mpz_set(result,one);
+	mpz_mod(base_aux,base_aux,module);
 
+
+	do{
+		mpz_mod(exponent_comprobation,exponent_aux,two);
+		if(mpz_cmp_ui(exponent_comprobation,1)>=0){
+			mpz_mul(result,result,base_aux);
+			mpz_mod(result,result,module);
+		}
+		mpz_div(exponent_aux,exponent_aux,two);
+		mpz_mul(base_aux,base_aux,base_aux);
+		mpz_mod(base_aux,base_aux,module);
+	} while (mpz_cmp_ui(exponent_aux,0) > 0);
+
+	mpz_clear(base_aux);
+	mpz_clear(exponent_aux);
+	mpz_clear(exponent_comprobation);
+	mpz_clear(zero);
+	mpz_clear(one);
+	mpz_clear(two);
+	return;
 }
 
 
