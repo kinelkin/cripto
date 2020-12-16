@@ -1,6 +1,7 @@
 #include "funciones.h"
 
-#define MIN_BITS 20
+#define MIN_BITS 100
+#define EXP_ARGS 7
 
 int main(int argc, char *argv[]){
   mpz_t p, q, n, ed_minus, phi_n, p_minus, q_minus, e, d, k, m, a, x, y;
@@ -14,26 +15,58 @@ int main(int argc, char *argv[]){
   mpz_init_set_ui(one,1);
   mpz_init_set_ui(two,2);
 
-  gmp_randinit_default(state);
-	gmp_randseed_ui(state, rand());
-
-  /*Find a prime for p*/
-  srand(time(NULL));
-  bits = rand()%MIN_BITS;
-  if(bits < 2)
-    bits += 2;
-  if(bits > MIN_BITS - 2)
-    bits -= 2;
   mpz_init(p);
   mpz_init(q);
   mpz_init(n);
-  /*generate p*/
-  printf("\nBITS == %d", bits);
-  gen_prime_bits(p, bits);
-  /*generate q*/
-  gen_prime_bits(q, MIN_BITS - bits);
-  /*n = pq*/
-  mpz_mul(n, p, q);
+  mpz_init(e);
+  mpz_init(d);
+  gmp_randinit_default(state);
+  gmp_randseed_ui(state, rand());
+  if(argc == 1){
+
+
+    /*Find a prime for p*/
+    srand(time(NULL));
+    bits = rand()%MIN_BITS;
+    if(bits < 2)
+      bits += 2;
+    if(bits > MIN_BITS - 2)
+      bits -= 2;
+
+    /*generate p*/
+    printf("\nBITS == %d", bits);
+    gen_prime_bits(p, bits);
+    /*generate q*/
+    gen_prime_bits(q, MIN_BITS - bits);
+    /*n = pq*/
+    mpz_mul(n, p, q);
+  }
+  else if(argc == EXP_ARGS){
+    if(argv[1][1] != 'n'){
+      printf("\nError: Expected -n but recieved %s", argv[1]);
+      return ERR;
+    }
+    else{
+      mpz_set_str(n, argv[2], 10); /*arg= 4*/
+    }
+    if(argv[3][1] != 'e'){
+      printf("\nError: Expected -e but recieved %s", argv[3]);
+      return ERR;
+    }
+    else{
+      mpz_set_str(e, argv[4], 10); /*arg= 4*/
+    }
+    if(argv[5][1] != 'd'){
+      printf("\nError: Expected -d but recieved %s", argv[5]);
+      return ERR;
+    }
+    else{
+      mpz_set_str(d, argv[6], 10); /*arg= 4*/
+    }
+  }
+  else{
+    printf("\nINCORRECT ARGS: Expected ./primo_rsa [-n vn -e ve -d vd]");
+  }
 
   mpz_init(p_minus);
   mpz_init(q_minus);
@@ -42,19 +75,20 @@ int main(int argc, char *argv[]){
   mpz_init(phi_n);
   mpz_mul(phi_n, p_minus, q_minus);
 
-  mpz_init(e);
   mpz_init(aux_s);
   mpz_init(aux_t);
   mpz_init_set_ui(aux, 0);
   /*e: mcd(e,phi(n)) = 1 */
-  while(mpz_cmp_ui(aux, 1) != 0){
-    mpz_urandomm (e, state, phi_n);
-    mpz_gcdext(aux, aux_s, aux_t, e, phi_n);
-  }
+  if(argc == 1){
+    while(mpz_cmp_ui(aux, 1) != 0){
+      mpz_urandomm (e, state, phi_n);
+      mpz_gcdext(aux, aux_s, aux_t, e, phi_n);
+    }
 
-  /*d = e^(-1) mod(phi(n))*/
-  mpz_init(d);
-  mpz_invert(d, e, phi_n);
+    /*d = e^(-1) mod(phi(n))*/
+
+      mpz_invert(d, e, phi_n);
+  }
 
   /*Ya tengo clave publica (e,n) y privada (d,n)*/
   // mpz_init(p);
@@ -120,7 +154,9 @@ int main(int argc, char *argv[]){
     mpz_set(p_guess, aux);
     mpz_divexact(q_guess, n, p_guess);
     gmp_printf("\nP_GUESS = %Zd\nQ_GUESS = %Zd\n", p_guess, q_guess);
-    if(mpz_cmp(p_guess,p) == 0 || mpz_cmp(p_guess,q) == 0)
+    mpz_mul(aux, p_guess, q_guess);
+    // if(mpz_cmp(p_guess,p) == 0 || mpz_cmp(p_guess,q) == 0)
+    if(mpz_cmp(aux, n) == 0)
       printf("\nYour Guesses are correct");
     else
       printf("\nYour Guesses are incorrect");
@@ -159,7 +195,9 @@ int main(int argc, char *argv[]){
       mpz_gcdext(p_guess, aux_s, aux_t, aux, n);
       mpz_divexact(q_guess, n, p_guess);
       gmp_printf("\nP_GUESS = %Zd\nQ_GUESS = %Zd\n", p_guess, q_guess);
-      if(mpz_cmp(p_guess,p) == 0 || mpz_cmp(p_guess,q) == 0)
+      mpz_mul(aux, p_guess, q_guess);
+      // if(mpz_cmp(p_guess,p) == 0 || mpz_cmp(p_guess,q) == 0)
+      if(mpz_cmp(aux, n) == 0)
         printf("\nYour Guesses are correct");
       else
         printf("\nYour Guesses are incorrect");
@@ -184,7 +222,9 @@ int main(int argc, char *argv[]){
   mpz_gcdext(p_guess, aux_s, aux_t, aux, n);
   mpz_divexact(q_guess, n, p_guess);
   gmp_printf("\nP_GUESS = %Zd\nQ_GUESS = %Zd\n", p_guess, q_guess);
-  if(mpz_cmp(p_guess,p) == 0 || mpz_cmp(p_guess,q) == 0)
+  mpz_mul(aux, p_guess, q_guess);
+  // if(mpz_cmp(p_guess,p) == 0 || mpz_cmp(p_guess,q) == 0)
+  if(mpz_cmp(aux, n) == 0)
     printf("\nYour Guesses are correct");
   else
     printf("\nYour Guesses are incorrect");
