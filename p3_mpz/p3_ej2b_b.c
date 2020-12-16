@@ -4,14 +4,14 @@
 #define MIN_ARGS 5
 
 
-
 int main(int argc, char *argv[]){
   int arg = 1;
-  int b, rounds, i, isPrime, isPrimeGMP, bits, max_tries;
+  int b, rounds, i, isPrime, isPrimeGMP, max_tries;
   mpf_t sec, p;
   mpf_t numer_gmp, div_gmp, aux;
+  double ln;
 
-  mpz_t num;
+  mpz_t num, aux_power;
   long double p_d;
   char *fname_out = NULL;
   FILE *F_OUT = NULL;
@@ -66,29 +66,34 @@ int main(int argc, char *argv[]){
   // printf("\nFOUT == %s",fname_out);
   p_d = mpf_get_d(sec);
   mpz_init2(num, b);
-  gen_odd_num(num, b);
+  srand(time(NULL));
+  gen_odd_num_bits(num, b);
+  gmp_fprintf(F_OUT, "\nRAND: %Zd\n", num);
 
   rounds = ceil((log((b*log(2) - (1-p_d)*b*log(2))/(1-p_d))/log(4)));
-  // printf("\nROUNDS == %d", rounds);
 
   /*FIND A PRIME*/
-  bits = mpz_sizeinbase(num, 2);
-  max_tries = (int) log(pow(2, bits));
+  mpz_init_set_ui(aux_power, 2);
+  mpz_pow_ui(aux_power, aux_power, b);
+  ln = gmp_get_ln(aux_power);
+  max_tries = (int) ln;
   max_tries /= 2;
-  max_tries++;
-  srand(time(NULL));
+  max_tries+=10;
+  printf("\n\nmax_tries == %d", max_tries);
   for(i = 0; i < max_tries; i++){
     isPrime = MillerRabin(num, rounds);
+    // gmp_fprintf(F_OUT, "N: %Zd\n", num);
+    // printf("\n%d/%d", i, MAX_TRIES);
     if(isPrime == FALSE)
-      gen_odd_num_bits(num, bits);
+      gen_odd_num_bits(num, b);
     else break;
   }
 
   if(i == max_tries)
-    printf("\nPRIME NUMBER NOT FOUND");
+    printf("\nPRIME NUMBER NOT FOUND after %d tries", max_tries);
   else{
     printf("\n\n");
-    gmp_fprintf(F_OUT, "NUMBER FOUND: %Zd", num);
+    gmp_fprintf(F_OUT, "NUMBER FOUND in %d tries: %Zd",i, num);
     mpf_init(numer_gmp);
     mpf_set_ui(numer_gmp, pow(4, isPrime));
     mpf_init (div_gmp);
