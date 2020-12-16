@@ -1,6 +1,6 @@
 #include "funciones.h"
 
-#define MIN_BITS 4096
+#define MIN_BITS 20
 
 int main(int argc, char *argv[]){
   mpz_t p, q, n, ed_minus, phi_n, p_minus, q_minus, e, d, k, m, a, x, y;
@@ -29,13 +29,9 @@ int main(int argc, char *argv[]){
   mpz_init(n);
   /*generate p*/
   printf("\nBITS == %d", bits);
-  printf("\nTRICK 1");
   gen_prime_bits(p, bits);
-  printf("\nTRICK 2");
   /*generate q*/
-  printf("\nTRICK 3");
   gen_prime_bits(q, MIN_BITS - bits);
-  printf("\nTRICK 4");
   /*n = pq*/
   mpz_mul(n, p, q);
 
@@ -132,6 +128,7 @@ int main(int argc, char *argv[]){
     mpz_clears(zero, one, two, NULL);
     mpz_clears(p, q, n, ed_minus, phi_n, p_minus, q_minus, e, d, k, m, a, NULL);
     mpz_clears(aux, aux_s, aux_t, mod, p_guess, q_guess, NULL);
+    gmp_randclear(state);
     return OK;
   }
 
@@ -140,13 +137,13 @@ int main(int argc, char *argv[]){
   mpz_init(x);
   // modularExponentiation(x, a, m, n);
   mpz_powm(x, a, m, n);
-  gmp_printf("\nX == %Zd", x);
   mpz_sub_ui(aux, n, 1);
   if(mpz_cmp_ui(x,1) == 0 || mpz_cmp(x, aux) == 0){
     printf("\nNo Responde\n");
     mpz_clears(zero, one, two, NULL);
     mpz_clears(p, q, n, ed_minus, phi_n, p_minus, q_minus, e, d, k, m, a, x, NULL);
     mpz_clears(aux, aux_s, aux_t, mod, p_guess, q_guess, NULL);
+    gmp_randclear(state);
     return ERR;
   }
 
@@ -169,6 +166,7 @@ int main(int argc, char *argv[]){
       mpz_clears(zero, one, two, NULL);
       mpz_clears(p, q, n, ed_minus, phi_n, p_minus, q_minus, e, d, k, m, a, x, y, NULL);
       mpz_clears(aux, aux_s, aux_t, mod, p_guess, q_guess, NULL);
+      gmp_randclear(state);
       return OK;
     }
     mpz_sub_ui(aux, n, 1);
@@ -177,6 +175,7 @@ int main(int argc, char *argv[]){
       mpz_clears(zero, one, two, NULL);
       mpz_clears(p, q, n, ed_minus, phi_n, p_minus, q_minus, e, d, k, m, a, x, y, NULL);
       mpz_clears(aux, aux_s, aux_t, mod, p_guess, q_guess, NULL);
+      gmp_randclear(state);
       return ERR;
     }
   }
@@ -195,6 +194,7 @@ int main(int argc, char *argv[]){
   mpz_clears(zero, one, two, NULL);
   mpz_clears(p, q, n, ed_minus, phi_n, p_minus, q_minus, e, d, k, m, a, x, y, NULL);
   mpz_clears(aux, aux_s, aux_t, mod, p_guess, q_guess, NULL);
+  gmp_randclear(state);
   return OK;
 
 }

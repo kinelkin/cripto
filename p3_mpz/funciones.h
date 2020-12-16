@@ -20,7 +20,7 @@
 #define MAX_ROUNDS 24
 
 void modularExponentiation(mpz_t result, mpz_t base, mpz_t exponent, mpz_t module);
-int MillerRabin(mpz_t n, int rounds);
+int millerRabin(mpz_t n, int rounds);
 void gen_odd_num(mpz_t num, int bits);
 void gen_odd_num_bits(mpz_t num, int bits);
 double gmp_get_ln(mpz_t num);

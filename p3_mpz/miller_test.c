@@ -18,7 +18,7 @@ int main(){
     puts("Enter the number of iterations of the Miller-Rabin Algorithm: ");
     scanf("%d", &rounds);
 
-    isPrimeMiller = MillerRabin(num_gmp, rounds);
+    isPrimeMiller = millerRabin(num_gmp, rounds);
     if(isPrimeMiller == FALSE)
       printf("\nMiller says that it is not prime");
     else{

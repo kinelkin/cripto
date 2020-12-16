@@ -81,7 +81,7 @@ int main(int argc, char *argv[]){
   max_tries+=10;
   printf("\n\nmax_tries == %d", max_tries);
   for(i = 0; i < max_tries; i++){
-    isPrime = MillerRabin(num, rounds);
+    isPrime = millerRabin(num, rounds);
     // gmp_fprintf(F_OUT, "N: %Zd\n", num);
     // printf("\n%d/%d", i, MAX_TRIES);
     if(isPrime == FALSE)

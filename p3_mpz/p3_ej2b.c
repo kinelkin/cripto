@@ -78,7 +78,7 @@ int main(int argc, char *argv[]){
   max_tries++;
   srand(time(NULL));
   for(i = 0; i < max_tries; i++){
-    isPrime = MillerRabin(num, rounds);
+    isPrime = millerRabin(num, rounds);
     if(isPrime == FALSE)
       gen_odd_num_bits(num, bits);
     else break;

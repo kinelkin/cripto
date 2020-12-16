@@ -36,5 +36,8 @@ int main(){
 	mpz_clear(exponent_comprobation);
 	mpz_clear(mod_comprobation);
 	mpz_clear(result_comprobation);
+	free(base);
+	free(exponent);
+	free(mod);
 	return 0;
 }

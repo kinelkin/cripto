@@ -57,7 +57,7 @@ void modularExponentiation(mpz_t result, mpz_t base, mpz_t exponent, mpz_t modul
 *******************************************************************************
 *******************************************************************************/
 
-/*int MillerRabin(mpz_t prime, int accuracy){
+/*int millerRabin(mpz_t prime, int accuracy){
 
     int i;
 		mpz_t q, a, mod;
@@ -112,7 +112,7 @@ void modularExponentiation(mpz_t result, mpz_t base, mpz_t exponent, mpz_t modul
     return i;
 }
 */
-int MillerRabinTest(mpz_t n, mpz_t m, mpz_t k){
+int millerRabinTest(mpz_t n, mpz_t m, mpz_t k){
 	gmp_randstate_t state;
 	mpz_t a, x, n_minus, aux;
 	unsigned long i, k_long;
@@ -145,6 +145,7 @@ int MillerRabinTest(mpz_t n, mpz_t m, mpz_t k){
 		mpz_clear(aux);
 		mpz_clear(one);
 		mpz_clear(two);
+		gmp_randclear(state);
 		return TRUE;
 	}
 
@@ -159,6 +160,7 @@ int MillerRabinTest(mpz_t n, mpz_t m, mpz_t k){
 			mpz_clear(aux);
 			mpz_clear(one);
 			mpz_clear(two);
+			gmp_randclear(state);
 			return FALSE;
 		}
 		/*Posible Prime*/
@@ -169,6 +171,7 @@ int MillerRabinTest(mpz_t n, mpz_t m, mpz_t k){
 			mpz_clear(aux);
 			mpz_clear(one);
 			mpz_clear(two);
+			gmp_randclear(state);
 			return TRUE;
 		}
 	}
@@ -181,13 +184,14 @@ int MillerRabinTest(mpz_t n, mpz_t m, mpz_t k){
 	mpz_clear(aux);
 	mpz_clear(one);
 	mpz_clear(two);
+	gmp_randclear(state);
 	return FALSE;
 
 
 }
 
 
-int MillerRabin(mpz_t n, int rounds){
+int millerRabin(mpz_t n, int rounds){
 	int i, isPrimeMiller;
 	mpz_t aux, mod, n_minus, m, k;
 	mpz_t zero, one, two;
@@ -220,7 +224,7 @@ int MillerRabin(mpz_t n, int rounds){
 	// gmp_printf("\n%Zd = 2^(%Zd)*%Zd", n_minus, k, m);
 
 	for(i = 0; i < rounds; i++){
-		isPrimeMiller = MillerRabinTest(n, m, k);
+		isPrimeMiller = millerRabinTest(n, m, k);
 		if(isPrimeMiller == FALSE){
 			mpz_clear(aux);
 			mpz_clear(zero);
@@ -261,6 +265,7 @@ void gen_odd_num(mpz_t num, int bits){
 		mpz_add_ui(num, num, 1);
 	}
 	mpz_clear(mod);
+	gmp_randclear(state);
 	return;
 }
 
@@ -272,7 +277,7 @@ void gen_odd_num_bits(mpz_t num, int bits){
 
 void gen_prime_bits(mpz_t prime, int bits){
 	gen_odd_num(prime, bits);
-	while(MillerRabin(prime, MAX_ROUNDS) == FALSE){
+	while(millerRabin(prime, MAX_ROUNDS) == FALSE){
 		gen_odd_num(prime, bits);
 	}
 	return;
